@@ -1,11 +1,10 @@
 package com.github.liyasharipova.blockchain.archive.application.controller;
 
 import com.github.liyasharipova.blockchain.archive.application.exception.StorageFileNotFoundException;
-import com.github.liyasharipova.blockchain.archive.application.service.DataService;
-//import com.github.liyasharipova.blockchain.archive.hashing.blockchaindata.BlockchainDataService;
-//import com.github.liyasharipova.blockchain.archive.hashing.transaction.TransactionService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.github.liyasharipova.blockchain.archive.application.service.FileStorageService;
+import com.github.liyasharipova.blockchain.archive.application.service.HashingService;
+import com.github.liyasharipova.blockchain.archive.application.service.NodeService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
@@ -16,70 +15,76 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
-import java.util.Date;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 
 @Controller
+@Slf4j
 public class FileUploadController {
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(FileUploadController.class);
+    private FileStorageService fileStorageService;
 
-//    private final BlockchainDataService blockchainDataService;
+    private static final ExecutorService executorService = Executors.newCachedThreadPool();
 
-//    private final TransactionService transactionService;
+    private NodeService nodeService;
 
-    private DataService dataService;
+    private HashingService hashingService;
 
-//    @Autowired
-//    public FileUploadController(BlockchainDataService blockchainDataService,
-//                                TransactionService transactionService,
-//                                DataService dataService) {
-//        this.blockchainDataService = blockchainDataService;
-//        this.transactionService = transactionService;
-//        this.dataService = dataService;
-//    }
+    @Autowired
+    public FileUploadController(
+            FileStorageService fileStorageService,
+            NodeService nodeService,
+            HashingService hashingService) {
+        this.fileStorageService = fileStorageService;
+        this.nodeService = nodeService;
+        this.hashingService = hashingService;
+    }
+
 
     @GetMapping("/")
     public String listUploadedFiles(Model model) throws IOException {
 
-        model.addAttribute("files", dataService.loadAllFiles());
+        model.addAttribute("files", fileStorageService.getAllFiles());
 
         return "uploadPage";
     }
 
-    @GetMapping("/files/{filename:.+}")
+    @GetMapping("/files/{file-hash:.+}")
     @ResponseBody
-    public ResponseEntity<Resource> serveFile(@PathVariable String filename) throws IOException {
+    public ResponseEntity<Resource> serveFile(@PathVariable String fileHash) throws IOException {
 
-//        Resource file = transactionService.loadAsResource(filename);
-//        return ResponseEntity.ok()
-//                             .contentLength(file.contentLength())
-//                             .contentType(MediaType.parseMediaType("application/octet-stream"))
-//                             .body(file);
-        return  null;
+        Resource file = fileStorageService.getFile(fileHash);
+
+        return ResponseEntity.ok()
+                             .contentLength(file.contentLength())
+                             .contentType(MediaType.parseMediaType("application/octet-stream"))
+                             .body(file);
     }
 
     @PostMapping(value = "/", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public String handleFileUpload(@RequestParam("file") MultipartFile file,
-                                   RedirectAttributes redirectAttributes,
-                                   @RequestHeader("User-Agent") String userId) {
+                                   RedirectAttributes redirectAttributes) {
 
-//        try {
-//            long currentTime = new Date().getTime();
-//            blockchainDataService.placeToBlockchain(file.getBytes(), file.getOriginalFilename(), userId, currentTime);
-//        } catch (IOException e) {
-//            LOGGER.warn("File uploading unsuccessful", e.getCause());
-//        }
-//        LOGGER.info("File {} saved in blockchain", file.getOriginalFilename());
-//
-//        redirectAttributes.addAttribute("message",
-//                                        "You successfully uploaded " + file.getOriginalFilename() + "!");
+        //Отправить параллельно файл в хранилище данных
+        executorService.submit(() -> fileStorageService.uploadFile(file));
+
+        try {
+            String hash = hashingService.hash(file.getBytes());
+            //Отправить параллельно его хэш всем нодам
+            executorService.submit(() -> nodeService.sendHash(hash));
+        } catch (IOException e) {
+            log.warn(e.getMessage(), e.getCause());
+        }
+
+        redirectAttributes.addAttribute("message",
+                                        "You successfully uploaded " + file.getOriginalFilename());
 
         return "redirect:/";
     }

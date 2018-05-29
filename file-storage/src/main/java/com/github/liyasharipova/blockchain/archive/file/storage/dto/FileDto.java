@@ -1,5 +1,6 @@
 package com.github.liyasharipova.blockchain.archive.file.storage.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 /**

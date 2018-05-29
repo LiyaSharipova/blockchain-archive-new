@@ -1,6 +1,8 @@
 package com.github.liyasharipova.blockchain.archive.file.storage.entity;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -13,6 +15,7 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "file", schema = "public")
 @Data
+@NoArgsConstructor
 public class FileEntity {
 
     @Id
@@ -31,4 +34,10 @@ public class FileEntity {
     @Basic
     @Column(name = "data")
     private byte[] data;
+
+    public FileEntity(String name, String hash, byte[] data) {
+        this.name = name;
+        this.hash = hash;
+        this.data = data;
+    }
 }
