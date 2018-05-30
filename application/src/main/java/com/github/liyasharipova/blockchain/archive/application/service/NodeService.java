@@ -28,7 +28,10 @@ public class NodeService {
         nodes.forEach(node -> {
             String uri = "http://" + node.getHost() + ":" + node.getPort() + "/receive-hash";
             restTemplate.postForObject(uri, hash, String.class);
+            log.info("Отправлен хэш к серверу {}:{}", node.getHost(), node.getPort());
         });
+
+        log.info("Отправлены все хэши к {} серверам", nodes.size());
 
     }
 }

@@ -55,14 +55,14 @@ public class FileStorageService {
         return restTemplate.getForObject(url, Resource.class);
     }
 
-    public void uploadFile(MultipartFile file) {
+    public void uploadFile(MultipartFile file, String hash) {
         RestTemplate restTemplate = new RestTemplate();
 
         String uri = FILE_STORAGE_URL + "/upload-file";
 
         try {
             ByteArrayResource byteArrayResource = new ByteArrayResource(file.getBytes());
-            FileDto fileDto = new FileDto(file.getOriginalFilename(), "hash", byteArrayResource);
+            FileDto fileDto = new FileDto(file.getOriginalFilename(), hash, byteArrayResource);
             restTemplate.postForObject(uri, fileDto, FileDto.class);
 
         } catch (IOException e) {

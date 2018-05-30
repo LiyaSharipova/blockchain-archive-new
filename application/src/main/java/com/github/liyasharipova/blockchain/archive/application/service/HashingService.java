@@ -16,7 +16,7 @@ import java.security.Security;
 @Transactional
 public class HashingService {
 
-    private static final String STRIBOG_256 = "Stribog256";
+    private static final String STRIBOG_VERSION = "Stribog256";
 
     public String hash(byte[] fileData) {
         if (Security.getProvider("JStribog") == null) {
@@ -24,7 +24,7 @@ public class HashingService {
         }
 
         try {
-            MessageDigest digest = MessageDigest.getInstance(STRIBOG_256);
+            MessageDigest digest = MessageDigest.getInstance(STRIBOG_VERSION);
 
             //Applies hash() to our input,
             byte[] hash = digest.digest(fileData);

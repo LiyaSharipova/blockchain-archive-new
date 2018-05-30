@@ -24,21 +24,20 @@ import java.io.IOException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-
 @Controller
 @Slf4j
-public class FileUploadController {
+public class FileController {
 
     private FileStorageService fileStorageService;
-
-    private static final ExecutorService executorService = Executors.newCachedThreadPool();
 
     private NodeService nodeService;
 
     private HashingService hashingService;
 
+    private static final ExecutorService executorService = Executors.newCachedThreadPool();
+
     @Autowired
-    public FileUploadController(
+    public FileController(
             FileStorageService fileStorageService,
             NodeService nodeService,
             HashingService hashingService) {
@@ -68,19 +67,24 @@ public class FileUploadController {
                              .body(file);
     }
 
-    @PostMapping(value = "/", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "/files", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public String handleFileUpload(@RequestParam("file") MultipartFile file,
-                                   RedirectAttributes redirectAttributes) {
+                                   RedirectAttributes redirectAttributes) throws IOException {
 
-        //Отправить параллельно файл в хранилище данных
-        executorService.submit(() -> fileStorageService.uploadFile(file));
 
         try {
             String hash = hashingService.hash(file.getBytes());
+
+            //Отправить параллельно файл в хранилище данных
+            executorService.submit(() -> fileStorageService.uploadFile(file, hash));
+
+
             //Отправить параллельно его хэш всем нодам
             executorService.submit(() -> nodeService.sendHash(hash));
+
         } catch (IOException e) {
             log.warn(e.getMessage(), e.getCause());
+            throw e;
         }
 
         redirectAttributes.addAttribute("message",
