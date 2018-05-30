@@ -29,7 +29,8 @@ public class FileController {
     private FileService fileService;
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
-    public @ResponseBody  List<FileDto> getAllFiles() {
+    public @ResponseBody
+    List<FileDto> getAllFiles() {
         return fileService.getAllFiles();
     }
 

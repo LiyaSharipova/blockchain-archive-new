@@ -46,7 +46,6 @@ public class FileController {
         this.hashingService = hashingService;
     }
 
-
     @GetMapping("/")
     public String listUploadedFiles(Model model) throws IOException {
 
@@ -71,13 +70,11 @@ public class FileController {
     public String handleFileUpload(@RequestParam("file") MultipartFile file,
                                    RedirectAttributes redirectAttributes) throws IOException {
 
-
         try {
             String hash = hashingService.hash(file.getBytes());
 
             //Отправить параллельно файл в хранилище данных
             executorService.submit(() -> fileStorageService.uploadFile(file, hash));
-
 
             //Отправить параллельно его хэш всем нодам
             executorService.submit(() -> nodeService.sendHash(hash));
