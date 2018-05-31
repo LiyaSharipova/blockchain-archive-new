@@ -20,16 +20,16 @@ import java.util.List;
 @Service
 public class FileStorageService {
 
-    @Value("data.server.host")
-    private String DATA_SERVER_HOST;
+    @Value("file.storage.server.host")
+    private String FILE_STORAGE_SERVER_HOST;
 
-    @Value("data.server.port")
-    private String DATA_SERVER_PORT;
+    @Value("file.storage.server.port")
+    private String FILE_STORAGE_SERVER_PORT;
 
     private String FILE_STORAGE_URL;
 
     public FileStorageService() {
-        this.FILE_STORAGE_URL = "http://" + DATA_SERVER_HOST + ":" + DATA_SERVER_PORT;
+        this.FILE_STORAGE_URL = "http://" + FILE_STORAGE_SERVER_HOST + ":" + FILE_STORAGE_SERVER_PORT;
     }
 
     public List<FileDto> getAllFiles() {
@@ -37,14 +37,14 @@ public class FileStorageService {
 
         String uri = FILE_STORAGE_URL + "/";
 
-        ResponseEntity<List<FileDto>> rateResponse =
+        ResponseEntity<List<FileDto>> fileDtoEntity =
                 restTemplate.exchange(uri,
                                       HttpMethod.GET,
                                       null,
                                       new ParameterizedTypeReference<List<FileDto>>() {
                                       });
 
-        return rateResponse.getBody();
+        return fileDtoEntity.getBody();
     }
 
     public Resource getFile(String fileHash) {

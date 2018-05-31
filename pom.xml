@@ -83,11 +83,4 @@
             </plugins>
         </pluginManagement>
     </build>
-
-    <repositories>
-        <repository>
-            <id>local-maven-repo</id>
-            <url>file:///${project.basedir}/libs</url>
-        </repository>
-    </repositories>
 </project>

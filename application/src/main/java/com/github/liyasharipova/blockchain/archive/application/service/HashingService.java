@@ -23,6 +23,7 @@ public class HashingService {
             Security.addProvider(new StribogProvider());
         }
 
+        // Здесь происходит магия хеширования
         try {
             MessageDigest digest = MessageDigest.getInstance(STRIBOG_VERSION);
 

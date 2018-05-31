@@ -29,9 +29,25 @@ public class NonceService {
 
         // 0-15 при nonceStep = 15
         if (nonceCounter == 0) {
+            usedNoncesRange.replace(blockId, nonceCounter, nonceCounter++);
             return new NonceRangeDto(0L, nonceStep);
         }
         // 16-30, 31-45 при nonceStep = 15
+        usedNoncesRange.replace(blockId, nonceCounter, nonceCounter++);
         return new NonceRangeDto(nonceCounter * nonceStep + 1, (nonceCounter + 1) * nonceStep);
     }
 }
+
+// I. usedNoncesRange: 0 -> 0
+// I. usedNoncesRange: 0 -> 1, 0-15
+
+// II. usedNoncesRange: 0 -> 1
+// II. usedNoncesRange: 0 -> 2
+// II. usedNoncesRange: 0 -> 2
+
+// III. usedNoncesRange: 1 -> 0
+// III. usedNoncesRange: 0 -> 1, 0-15
+
+
+
+

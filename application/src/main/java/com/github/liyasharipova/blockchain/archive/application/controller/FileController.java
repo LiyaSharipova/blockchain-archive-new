@@ -20,9 +20,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.validation.constraints.NotBlank;
 import java.io.IOException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 @Controller
 @Slf4j
@@ -47,22 +49,22 @@ public class FileController {
     }
 
     @GetMapping("/")
-    public String listUploadedFiles(Model model) throws IOException {
+    public String listUploadedFiles(Model model) {
 
         model.addAttribute("files", fileStorageService.getAllFiles());
 
         return "uploadPage";
     }
 
-    @GetMapping("/files/{file-hash:.+}")
+    @GetMapping("/files/{file-hash}")
     @ResponseBody
-    public ResponseEntity<Resource> serveFile(@PathVariable String fileHash) throws IOException {
+    public ResponseEntity<Resource> serveFile(@NotBlank @PathVariable String fileHash) throws IOException {
 
         Resource file = fileStorageService.getFile(fileHash);
 
         return ResponseEntity.ok()
                              .contentLength(file.contentLength())
-                             .contentType(MediaType.parseMediaType("application/octet-stream"))
+                             .contentType(MediaType.APPLICATION_OCTET_STREAM)
                              .body(file);
     }
 
@@ -71,6 +73,7 @@ public class FileController {
                                    RedirectAttributes redirectAttributes) throws IOException {
 
         try {
+
             String hash = hashingService.hash(file.getBytes());
 
             //Отправить параллельно файл в хранилище данных
@@ -84,8 +87,17 @@ public class FileController {
             throw e;
         }
 
+        // Ждем завршения всех потоков
+        boolean isFinished = false;
+        try {
+            isFinished = executorService.awaitTermination(5, TimeUnit.SECONDS);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        log.info("Файл и хэш были отправлены в хранилище и нодам: {}", isFinished);
+
         redirectAttributes.addAttribute("message",
-                                        "You successfully uploaded " + file.getOriginalFilename());
+                                        "Вы успешно загрузили файл с именем " + file.getOriginalFilename());
 
         return "redirect:/";
     }

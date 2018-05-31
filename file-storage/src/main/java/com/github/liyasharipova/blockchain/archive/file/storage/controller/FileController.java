@@ -2,6 +2,7 @@ package com.github.liyasharipova.blockchain.archive.file.storage.controller;
 
 import com.github.liyasharipova.blockchain.archive.file.storage.dto.FileDto;
 import com.github.liyasharipova.blockchain.archive.file.storage.service.FileService;
+import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
@@ -35,11 +36,13 @@ public class FileController {
     }
 
     @RequestMapping(value = "/{file-hash}", method = RequestMethod.GET)
-    public ResponseEntity<Resource> uploadFile(@PathParam("file-hash") String fileHash) throws IOException {
+    public ResponseEntity<Resource> downloadFile(@NotBlank @PathParam("file-hash") String fileHash)
+            throws IOException {
         Resource file = fileService.getFileByHash(fileHash);
+        // Формируем HTTP-response application service-у
         return ResponseEntity.ok()
                              .contentLength(file.contentLength())
-                             .contentType(MediaType.parseMediaType("application/octet-stream"))
+                             .contentType(MediaType.APPLICATION_OCTET_STREAM)
                              .body(file);
 
     }

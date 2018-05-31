@@ -31,7 +31,7 @@ public class NodeService {
             log.info("Отправлен хэш к серверу {}:{}", node.getHost(), node.getPort());
         });
 
-        log.info("Отправлены все хэши к {} серверам", nodes.size());
+        log.info("Отправлен хэш {} к {} серверам", hash.substring(0, 6), nodes.size());
 
     }
 }

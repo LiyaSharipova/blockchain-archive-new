@@ -12,6 +12,7 @@ public class FileDto {
 
     private String hash;
 
+    //todo согласовать c Resource
     private byte[] data;
 
 }

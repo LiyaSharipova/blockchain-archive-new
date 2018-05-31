@@ -29,7 +29,7 @@
     <ul>
         <c:forEach items="${files}" var="file">
             <li>
-                <a href="/files/${file.name}">${file.name}</a>
+                <a href="/files/${file.hash}">${file.name}</a>
             </li>
         </c:forEach>
     </ul>
