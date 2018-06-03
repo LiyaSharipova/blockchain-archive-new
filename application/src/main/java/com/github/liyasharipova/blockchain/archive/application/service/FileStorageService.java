@@ -35,7 +35,7 @@ public class FileStorageService {
     public List<FileDto> getAllFiles() {
         RestTemplate restTemplate = new RestTemplate();
 
-        String uri = FILE_STORAGE_URL + "/";
+        String uri = FILE_STORAGE_URL + "/files";
 
         ResponseEntity<List<FileDto>> fileDtoEntity =
                 restTemplate.exchange(uri,
@@ -50,7 +50,7 @@ public class FileStorageService {
     public Resource getFile(String fileHash) {
         RestTemplate restTemplate = new RestTemplate();
 
-        String url = FILE_STORAGE_URL + "/" + fileHash;
+        String url = FILE_STORAGE_URL + "/files/" + fileHash;
 
         return restTemplate.getForObject(url, Resource.class);
     }

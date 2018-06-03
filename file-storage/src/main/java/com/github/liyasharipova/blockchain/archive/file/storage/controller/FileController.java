@@ -29,13 +29,13 @@ public class FileController {
     @Autowired
     private FileService fileService;
 
-    @RequestMapping(value = "/", method = RequestMethod.GET)
+    @RequestMapping(value = "/files", method = RequestMethod.GET)
     public @ResponseBody
     List<FileDto> getAllFiles() {
         return fileService.getAllFiles();
     }
 
-    @RequestMapping(value = "/{file-hash}", method = RequestMethod.GET)
+    @RequestMapping(value = "/files/{file-hash}", method = RequestMethod.GET)
     public ResponseEntity<Resource> downloadFile(@NotBlank @PathParam("file-hash") String fileHash)
             throws IOException {
         Resource file = fileService.getFileByHash(fileHash);
@@ -47,7 +47,7 @@ public class FileController {
 
     }
 
-    @PostMapping(value = "/upload-file", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "/upload-file", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file,
                                              @RequestParam("hash") String hash) {
         fileService.saveFile(file, hash);
