@@ -23,5 +23,5 @@ public interface TransactionApi {
     @RequestMapping(value = "/receive-file-info",
                     consumes = {"application/json"},
                     method = RequestMethod.POST)
-    ResponseEntity<InlineResponse200> receiveHash(@ApiParam(value = "") @Valid @RequestBody Hash body);
+    ResponseEntity<InlineResponse200> receiveHash(@ApiParam(value = "") @Valid @RequestBody Hash hash);
 }

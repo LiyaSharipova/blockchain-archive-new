@@ -26,7 +26,7 @@ public class NodeController implements NodeApi {
 
     @PostMapping(value = "/receive-hash", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity receiveHash(@RequestParam("hash") String hash) {
-        transactionService.putHashIntoTransaction(hash);
+//        transactionService.mineBlockAndPlaceToBlockchain(hash);
         return ResponseEntity.ok().build();
     }
 

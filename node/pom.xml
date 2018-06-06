@@ -71,7 +71,7 @@
                 <groupId>io.swagger</groupId>
                 <artifactId>swagger-codegen-maven-plugin</artifactId>
                 <version>2.3.1</version>
-                <executions><execution><goals><goal>generate</goal></goals></execution></executions>
+
                 <configuration>
                     <inputSpec>${project.basedir}/src/main/resources/spec/node.json</inputSpec>
                     <language>spring</language>
