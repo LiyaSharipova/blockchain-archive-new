@@ -50,6 +50,15 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+
+        </dependency>
+        <dependency>
+            <groupId>io.swagger</groupId>
+            <artifactId>swagger-annotations</artifactId>
+        </dependency>
     </dependencies>
 
     <build>
@@ -57,6 +66,17 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>io.swagger</groupId>
+                <artifactId>swagger-codegen-maven-plugin</artifactId>
+                <version>2.3.1</version>
+                <configuration>
+                    <inputSpec>${project.basedir}/src/main/resources/spec/node.json</inputSpec>
+                    <language>spring</language>
+                    <library>spring-boot</library>
+                    <output>${build.directory}/generated-sources/java</output>
+                </configuration>
             </plugin>
         </plugins>
     </build>

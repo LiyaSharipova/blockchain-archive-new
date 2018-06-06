@@ -1,0 +1,273 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Application Server API",
+    "version": "1.0",
+    "description": "API для Application Server, который будет посередине между клиентом и узлами сети блокчейн"
+  },
+  "host": "example.com",
+  "paths": {
+    "/nonces": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "begin_nonce": {
+                  "type": "integer",
+                  "format": "int64",
+                  "description": "Начало диапазона nonce"
+                },
+                "end_nonce": {
+                  "type": "integer",
+                  "format": "int64",
+                  "description": "Конец диапазона nonce"
+                }
+              },
+              "required": [
+                "end_nonce"
+              ]
+            },
+            "examples": {
+              "application/json": {
+                "end_nonce": 10,
+                "begin_nonce": 30
+              }
+            }
+          }
+        },
+        "description": "Получение каждой нодой диапазона nonce для майнинга",
+        "operationId": "getNonces",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "node_id": {
+                  "type": "integer",
+                  "description": "Идентификатор узла"
+                },
+                "block_id": {
+                  "type": "integer",
+                  "format": "int64",
+                  "description": "Идентификатор блока для добавления в блокчейн"
+                }
+              },
+              "required": [
+                "node_id",
+                "block_id"
+              ]
+            },
+            "x-examples": {
+              "application/json": {
+                "node_id": 1,
+                "block_id": 101
+              }
+            }
+          }
+        ],
+        "summary": "Получение nonce",
+        "tags": [
+          "Nonce"
+        ]
+      }
+    },
+    "/upload-file": {
+      "post": {
+        "responses": {
+          "200": {
+            "description": "Получение статуса загрузки",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "isUploaded": {
+                  "type": "boolean",
+                  "description": "Статус успешной загрузки файла"
+                }
+              }
+            }
+          }
+        },
+        "operationId": "uploadFile",
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "description": "Отправка файла для загрузки",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "User-Agent",
+            "type": "string"
+          },
+          {
+            "in": "formData",
+            "name": "file",
+            "type": "file",
+            "description": "Отправляемый файл"
+          }
+        ],
+        "summary": "Загрузка файла",
+        "tags": [
+          "File"
+        ]
+      }
+    },
+    "/files/{file-id}": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "file": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        },
+        "description": "Получение файла по его id",
+        "operationId": "getFile",
+        "produces": [
+          "application/octet-stream"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "file-id",
+            "type": "integer",
+            "required": true,
+            "format": "int64"
+          }
+        ],
+        "summary": "Получение файла",
+        "tags": [
+          "File"
+        ]
+      }
+    },
+    "/self-check-result": {
+      "post": {
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "type": "object",
+              "properties": {}
+            }
+          }
+        },
+        "summary": "Принятие результата проверки",
+        "description": "Принятие результата проверки цепочки блоков с указанием номера ноды для контроля корректного состояния всех нод",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "block-number": {
+                  "type": "integer",
+                  "format": "int64"
+                },
+                "file-hash": {
+                  "type": "string"
+                },
+                "result": {
+                  "type": "boolean"
+                }
+              },
+              "required": [
+                "block-number",
+                "file-hash",
+                "result"
+              ]
+            }
+          }
+        ],
+        "tags": [
+          "Blockchain"
+        ]
+      }
+    },
+    "/receive-mining-result": {
+      "post": {
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "type": "object",
+              "properties": {}
+            }
+          }
+        },
+        "summary": "Получение результатов майнинга",
+        "description": "Получение номера блока и списков идентификаторов файлов в нем. Для передачи этой информации File Storage.",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "block-number": {
+                  "type": "integer",
+                  "description": "Номер блока"
+                },
+                "file-ids": {
+                  "type": "array",
+                  "format": "int64",
+                  "description": "Список идентификаторов файлов в блоке",
+                  "items": {
+                    "type": "integer"
+                  }
+                }
+              },
+              "required": [
+                "block-number",
+                "file-ids"
+              ]
+            }
+          }
+        ],
+        "operationId": "receiveMiningResult",
+        "consumes": [
+          "application/json"
+        ],
+        "tags": [
+          "Block"
+        ]
+      }
+    }
+  },
+  "parameters": {
+    "Auth": {
+      "name": "Auth",
+      "in": "header",
+      "type": "string",
+      "description": "blbla"
+    }
+  },
+  "tags": [
+    {
+      "name": "File"
+    },
+    {
+      "name": "Nonce"
+    },
+    {
+      "name": "Blockchain"
+    },
+    {
+      "name": "Block"
+    },
+    {
+      "name": "new-tag"
+    }
+  ]
+}

@@ -1,0 +1,211 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "File Storage API",
+    "version": "1.0"
+  },
+  "host": "example.com",
+  "paths": {
+    "/files": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/File"
+              }
+            }
+          }
+        },
+        "summary": "Выгрузить все файлы",
+        "operationId": "getAllFiles",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "File"
+        ]
+      }
+    },
+    "/set-blocks": {
+      "post": {
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "type": "object",
+              "properties": {}
+            }
+          }
+        },
+        "summary": "Проставление номера блока",
+        "description": "Проставление номера блока в указанных файлах, чтобы знать об их местонахождении в сети блокчейн",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "block-number": {
+                  "type": "integer",
+                  "description": "Номер блока"
+                },
+                "file-ids": {
+                  "type": "array",
+                  "format": "int64",
+                  "description": "Список идентификаторов файлов в блоке",
+                  "items": {
+                    "type": "integer"
+                  }
+                }
+              },
+              "required": [
+                "block-number",
+                "file-ids"
+              ]
+            }
+          }
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "tags": [
+          "Block"
+        ]
+      }
+    },
+    "/files/{files-id}": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/File"
+            }
+          }
+        },
+        "summary": "Выгрузить файл по его id",
+        "operationId": "getFileByHash",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "file-id",
+            "type": "integer",
+            "required": true,
+            "description": "Хэш файла",
+            "format": "int64"
+          }
+        ],
+        "tags": [
+          "File"
+        ]
+      }
+    },
+    "/upload-file": {
+      "post": {
+        "responses": {
+          "200": {
+            "description": "****",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "file-id": {
+                  "type": "integer",
+                  "format": "int64"
+                }
+              },
+              "required": [
+                "file-id"
+              ]
+            }
+          }
+        },
+        "operationId": "uploadFile",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "file": {
+                  "type": "object"
+                },
+                "hash": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "file",
+                "hash"
+              ]
+            }
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "summary": "Загрузить файл",
+        "tags": [
+          "File"
+        ]
+      }
+    },
+    "/receive-block-number": {
+      "post": {
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "type": "object",
+              "properties": {}
+            }
+          }
+        },
+        "summary": "Получить номер блока ",
+        "tags": [
+          "Block"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "File": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Имя файла"
+        },
+        "hash": {
+          "type": "string",
+          "description": "Хэш файла"
+        },
+        "data": {
+          "type": "string",
+          "description": "Данные файла"
+        }
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "File"
+    },
+    {
+      "name": "Block"
+    }
+  ]
+}
