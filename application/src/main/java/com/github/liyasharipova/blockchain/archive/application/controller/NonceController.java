@@ -1,7 +1,10 @@
 package com.github.liyasharipova.blockchain.archive.application.controller;
 
+import com.github.liyasharipova.blockchain.archive.application.api.NonceApi;
 import com.github.liyasharipova.blockchain.archive.application.dto.NonceRangeDto;
 import com.github.liyasharipova.blockchain.archive.application.service.NonceService;
+import io.swagger.model.Body;
+import io.swagger.model.InlineResponse200;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +15,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.validation.Valid;
 import javax.validation.constraints.PositiveOrZero;
 
 /**
@@ -19,7 +23,7 @@ import javax.validation.constraints.PositiveOrZero;
  */
 @Controller
 @Slf4j
-public class NonceController {
+public class NonceController implements NonceApi{
 
     private NonceService nonceService;
 
@@ -38,5 +42,10 @@ public class NonceController {
         return ResponseEntity.ok()
                              .contentType(MediaType.APPLICATION_JSON)
                              .body(nonceRangeDto);
+    }
+
+    @Override
+    public ResponseEntity<InlineResponse200> getNonces(@Valid Body body) {
+        return null;
     }
 }

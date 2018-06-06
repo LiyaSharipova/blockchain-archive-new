@@ -1,9 +1,12 @@
 package com.github.liyasharipova.blockchain.archive.application.controller;
 
+import com.github.liyasharipova.blockchain.archive.application.api.FileApi;
 import com.github.liyasharipova.blockchain.archive.application.exception.StorageFileNotFoundException;
 import com.github.liyasharipova.blockchain.archive.application.service.FileStorageService;
 import com.github.liyasharipova.blockchain.archive.application.service.HashingService;
 import com.github.liyasharipova.blockchain.archive.application.service.NodeService;
+import io.swagger.model.InlineResponse2001;
+import io.swagger.model.InlineResponse2002;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
@@ -20,6 +23,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import java.io.IOException;
 import java.util.concurrent.ExecutorService;
@@ -28,7 +32,7 @@ import java.util.concurrent.TimeUnit;
 
 @Controller
 @Slf4j
-public class FileController {
+public class FileController implements FileApi{
 
     private FileStorageService fileStorageService;
 
@@ -107,4 +111,13 @@ public class FileController {
         return ResponseEntity.notFound().build();
     }
 
+    @Override
+    public ResponseEntity<InlineResponse2002> getFile(Long fileId) {
+        return null;
+    }
+
+    @Override
+    public ResponseEntity<InlineResponse2001> uploadFile(String userAgent, @Valid MultipartFile file) {
+        return null;
+    }
 }
