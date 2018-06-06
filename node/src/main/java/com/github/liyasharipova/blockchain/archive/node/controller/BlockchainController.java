@@ -1,14 +1,13 @@
 package com.github.liyasharipova.blockchain.archive.node.controller;
 
 import com.github.liyasharipova.blockchain.archive.node.api.BlockchainApi;
-import io.swagger.model.Body;
-import io.swagger.model.Body2;
+import com.github.liyasharipova.blockchain.archive.node.dto.request.MiningInfoRequest;
+import com.github.liyasharipova.blockchain.archive.node.dto.request.NonceCheckRequest;
+import com.github.liyasharipova.blockchain.archive.node.dto.response.NonceCheckResponse;
 import io.swagger.model.InlineResponse2001;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import java.io.IOException;
 import java.util.List;
 
 /**
@@ -22,7 +21,8 @@ public class BlockchainController implements BlockchainApi {
         return null;
     }
 
-    public ResponseEntity<InlineResponse2001> receiveMinedBlockInfoPost(Body2 body) {
+    @Override
+    public ResponseEntity<NonceCheckResponse> receiveMinedBlockInfoPost(NonceCheckRequest nonceCheckRequest) {
         return null;
     }
 
@@ -32,7 +32,7 @@ public class BlockchainController implements BlockchainApi {
     }
 
     @Override
-    public ResponseEntity<Object> stopMining(Body body) {
+    public ResponseEntity<Object> stopMining(MiningInfoRequest miningInfoRequest) {
         return null;
     }
 }

@@ -51,4 +51,9 @@ public class FileService {
             log.error(e.getMessage(), e.getCause());
         }
     }
+
+    public Resource getFileById(Long id) {
+        byte[] data = fileStorageRepository.getFileById(id).getData();
+        return new ByteArrayResource(data);
+    }
 }

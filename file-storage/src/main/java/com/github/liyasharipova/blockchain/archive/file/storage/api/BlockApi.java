@@ -1,10 +1,9 @@
 package com.github.liyasharipova.blockchain.archive.file.storage.api;
 
 import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
-import io.swagger.model.Body;
+import com.github.liyasharipova.blockchain.archive.file.storage.dto.BlockRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,20 +13,17 @@ import javax.validation.Valid;
 
 public interface BlockApi {
 
-    @ApiOperation(value = "Проставление номера блока", nickname = "setBlocksPost",
-                  notes = "Проставление номера блока в указанных файлах, чтобы знать об их местонахождении в сети блокчейн",
-                  response = Object.class, tags = {"Block",})
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "", response = Object.class)})
+    /**
+     * Проставление номера блока в указанных файлах, чтобы знать об их местонахождении в сети блокчейн
+     */
     @RequestMapping(value = "/set-blocks",
                     consumes = {"application/json"},
                     method = RequestMethod.POST)
-    ResponseEntity<Object> setBlocksPost(@ApiParam(value = "") @Valid @RequestBody Body body);
+    ResponseEntity<Object> setBlocksPost(@Valid @RequestBody BlockRequest blockRequest);
 
-    @ApiOperation(value = "Получить номер блока ", nickname = "receiveBlockNumberPost", notes = "",
-                  response = Object.class, tags = {"Block",})
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "", response = Object.class)})
+    /**
+     * Получить номер блока
+     */
     @RequestMapping(value = "/receive-block-number",
                     method = RequestMethod.POST)
     ResponseEntity<Object> receiveBlockNumberPost();

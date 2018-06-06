@@ -1,11 +1,8 @@
 package com.github.liyasharipova.blockchain.archive.application.api;
 
-import io.swagger.annotations.ApiOperation;
+import com.github.liyasharipova.blockchain.archive.application.dto.NonceRangeDto;
+import com.github.liyasharipova.blockchain.archive.application.dto.request.NonceRequest;
 import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
-import io.swagger.model.Body;
-import io.swagger.model.InlineResponse200;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,12 +12,13 @@ import javax.validation.Valid;
 
 public interface NonceApi {
 
-    @ApiOperation(value = "Получение nonce", nickname = "getNonces",
-                  notes = "Получение каждой нодой диапазона nonce для майнинга", response = InlineResponse200.class,
-                  tags = {"Nonce",})
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "", response = InlineResponse200.class)})
+    /**
+     * Получение каждой нодой диапазона nonce для майнинга
+     *
+     * @param nonceRequest
+     * @return
+     */
     @RequestMapping(value = "/nonces",
                     method = RequestMethod.GET)
-    ResponseEntity<InlineResponse200> getNonces(@ApiParam(value = "") @Valid @RequestBody Body body);
+    ResponseEntity<NonceRangeDto> getNonces(@ApiParam(value = "") @Valid @RequestBody NonceRequest nonceRequest);
 }

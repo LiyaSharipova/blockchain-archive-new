@@ -6,32 +6,40 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import io.swagger.model.InlineResponse2001;
 import io.swagger.model.InlineResponse2002;
+import org.springframework.core.io.Resource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
+import java.io.IOException;
 
 public interface FileApi {
 
-    @ApiOperation(value = "Получение файла", nickname = "getFile", notes = "Получение файла по его id",
-                  response = InlineResponse2002.class, tags = {"File",})
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "", response = InlineResponse2002.class)})
+    /**
+     * Получение файла по его id
+     *
+     * @param fileId
+     * @return
+     */
     @RequestMapping(value = "/files/{file-id}",
                     produces = {"application/octet-stream"},
                     method = RequestMethod.GET)
-    ResponseEntity<InlineResponse2002> getFile(
-            @ApiParam(value = "", required = true) @PathVariable("file-id") Long fileId);
+    ResponseEntity<Resource> getFile(
+            @ApiParam(value = "", required = true) @PathVariable("file-id") Long fileId) throws IOException;
 
-    @ApiOperation(value = "Загрузка файла", nickname = "uploadFile", notes = "Отправка файла для загрузки",
-                  response = InlineResponse2001.class, tags = {"File",})
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Получение статуса загрузки", response = InlineResponse2001.class)})
+    /**
+     * Отправка файла для загрузки
+     *
+     * @param file
+     * @param redirectAttributes
+     * @return Получение статуса загрузки
+     */
     @RequestMapping(value = "/upload-file",
                     consumes = {"multipart/form-data"},
                     method = RequestMethod.POST)
-    ResponseEntity<InlineResponse2001> uploadFile(
-            @ApiParam(value = "") @RequestHeader(value = "User-Agent", required = false) String userAgent,
-            @ApiParam(value = "file detail") @Valid @RequestPart("file") MultipartFile file);
+    String uploadFile(
+            @ApiParam(value = "file detail") @Valid @RequestPart("file") MultipartFile file,
+            RedirectAttributes redirectAttributes) throws IOException;
 }

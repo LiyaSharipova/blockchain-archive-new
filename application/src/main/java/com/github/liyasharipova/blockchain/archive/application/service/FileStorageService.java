@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.constraints.NotBlank;
 import java.io.IOException;
 import java.util.List;
 
@@ -47,10 +48,10 @@ public class FileStorageService {
         return fileDtoEntity.getBody();
     }
 
-    public Resource getFile(String fileHash) {
+    public Resource getFile(@NotBlank Long fileId) {
         RestTemplate restTemplate = new RestTemplate();
 
-        String url = FILE_STORAGE_URL + "/files/" + fileHash;
+        String url = FILE_STORAGE_URL + "/files/" + fileId;
 
         return restTemplate.getForObject(url, Resource.class);
     }
