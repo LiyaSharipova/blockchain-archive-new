@@ -1,7 +1,7 @@
 package com.github.liyasharipova.blockchain.archive.file.storage.controller;
 
 import com.github.liyasharipova.blockchain.archive.file.storage.api.BlockApi;
-import io.swagger.model.Body;
+import com.github.liyasharipova.blockchain.archive.file.storage.dto.BlockRequest;
 import org.springframework.http.ResponseEntity;
 
 /**
@@ -10,7 +10,7 @@ import org.springframework.http.ResponseEntity;
 public class BlockController implements BlockApi{
 
     @Override
-    public ResponseEntity<Object> setBlocksPost(Body body) {
+    public ResponseEntity<Object> setBlocksPost(BlockRequest blockRequest) {
         return null;
     }
 
