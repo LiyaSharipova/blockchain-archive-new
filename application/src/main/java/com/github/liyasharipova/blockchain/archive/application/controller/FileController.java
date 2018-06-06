@@ -60,11 +60,11 @@ public class FileController implements FileApi{
         return "uploadPage";
     }
 
-    @GetMapping("/files/{file-hash}")
+    @GetMapping("/files/{file-id}")
     @ResponseBody
-    public ResponseEntity<Resource> serveFile(@NotBlank @PathVariable String fileHash) throws IOException {
+    public ResponseEntity<Resource> getFile(@NotBlank @PathVariable Long fileId) throws IOException {
 
-        Resource file = fileStorageService.getFile(fileHash);
+        Resource file = fileStorageService.getFile(fileId);
 
         return ResponseEntity.ok()
                              .contentLength(file.contentLength())
@@ -73,8 +73,8 @@ public class FileController implements FileApi{
     }
 
     @PostMapping(value = "/upload-file", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public String handleFileUpload(@RequestParam("file") MultipartFile file,
-                                   RedirectAttributes redirectAttributes) throws IOException {
+    public String uploadFile(@RequestParam("file") MultipartFile file,
+                             RedirectAttributes redirectAttributes) throws IOException {
 
         try {
 
@@ -111,13 +111,4 @@ public class FileController implements FileApi{
         return ResponseEntity.notFound().build();
     }
 
-    @Override
-    public ResponseEntity<InlineResponse2002> getFile(Long fileId) {
-        return null;
-    }
-
-    @Override
-    public ResponseEntity<InlineResponse2001> uploadFile(String userAgent, @Valid MultipartFile file) {
-        return null;
-    }
 }

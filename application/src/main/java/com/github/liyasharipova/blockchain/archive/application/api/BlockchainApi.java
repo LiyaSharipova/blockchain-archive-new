@@ -1,5 +1,7 @@
 package com.github.liyasharipova.blockchain.archive.application.api;
 
+import com.github.liyasharipova.blockchain.archive.application.dto.request.BlockRequest;
+import com.github.liyasharipova.blockchain.archive.application.dto.request.BlockchainRequest;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
@@ -15,22 +17,26 @@ import javax.validation.Valid;
 
 public interface BlockchainApi {
 
-    @ApiOperation(value = "Принятие результата проверки", nickname = "selfCheckResultPost",
-                  notes = "Принятие результата проверки цепочки блоков с указанием номера ноды для контроля корректного состояния всех нод",
-                  response = Object.class, tags = {"Blockchain",})
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "", response = Object.class)})
+    /**
+     * Принятие результата проверки цепочки блоков с указанием номера ноды для контроля корректного состояния всех нод
+     *
+     * @param blockchainRequest
+     * @return
+     */
+
     @RequestMapping(value = "/self-check-result",
                     method = RequestMethod.POST)
-    ResponseEntity<Object> selfCheckResultPost(@ApiParam(value = "") @Valid @RequestBody Body1 body);
+    ResponseEntity<Object> selfCheckResultPost(
+            @ApiParam(value = "") @Valid @RequestBody BlockchainRequest blockchainRequest);
 
-    @ApiOperation(value = "Получение результатов майнинга", nickname = "receiveMiningResult",
-                  notes = "Получение номера блока и списков идентификаторов файлов в нем. Для передачи этой информации File Storage.",
-                  response = Object.class, tags = {"Block",})
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "", response = Object.class)})
+    /**
+     * Получение номера блока и списков идентификаторов файлов в нем. Для передачи этой информации File Storage.
+     *
+     * @param blockRequest
+     * @return
+     */
     @RequestMapping(value = "/receive-mining-result",
                     consumes = {"application/json"},
                     method = RequestMethod.POST)
-    ResponseEntity<Object> receiveMiningResult(@ApiParam(value = "") @Valid @RequestBody Body2 body);
+    ResponseEntity<Object> receiveMiningResult(@ApiParam(value = "") @Valid @RequestBody BlockRequest blockRequest);
 }
