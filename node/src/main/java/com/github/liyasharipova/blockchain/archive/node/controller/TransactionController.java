@@ -11,7 +11,7 @@ import org.springframework.http.ResponseEntity;
 public class TransactionController implements TransactionApi{
 
     @Override
-    public ResponseEntity<InlineResponse200> receiveHash(Hash body) {
+    public Long receiveHash(Hash body) {
         return null;
     }
 }

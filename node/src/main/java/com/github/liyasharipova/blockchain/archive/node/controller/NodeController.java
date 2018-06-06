@@ -16,27 +16,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Slf4j
 public class NodeController implements NodeApi {
 
-    private BlockchainService transactionService;
-
-    @Autowired
-    public NodeController(
-            BlockchainService transactionService) {
-        this.transactionService = transactionService;
-    }
-
-    @PostMapping(value = "/receive-hash", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity receiveHash(@RequestParam("hash") String hash) {
-        transactionService.putHashIntoTransaction(hash);
-        return ResponseEntity.ok().build();
-    }
-
     @Override
-    public ResponseEntity<Object> selfCheckBlockNumberPost(Long blockNumber, Body1 body) {
+    public ResponseEntity<Object> selfCheckBlockNumberPost(Long blockNumber, String fileHash) {
         return null;
     }
 
     @Override
-    public ResponseEntity<InlineResponse2002> selfCheckGet() {
+    public Long selfCheckGet() {
         return null;
     }
 }

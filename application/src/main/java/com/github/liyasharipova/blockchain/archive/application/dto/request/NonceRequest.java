@@ -26,7 +26,7 @@ public class NonceRequest {
      **/
     @JsonProperty("node_id")
     @NotNull
-    private Integer nodeId = null;
+    private Integer nodeId;
 
     /**
      * Идентификатор блока для добавления в блокчейн
@@ -36,6 +36,6 @@ public class NonceRequest {
     @ApiModelProperty(required = true, value = "Идентификатор блока для добавления в блокчейн")
     @NotNull
     @JsonProperty("block_id")
-    private Long blockId = null;
+    private Long blockId;
 }
 

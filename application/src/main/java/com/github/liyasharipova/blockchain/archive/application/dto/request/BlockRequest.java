@@ -30,7 +30,7 @@ public class BlockRequest {
      **/
     @JsonProperty("block-number")
     @NotNull
-    private Integer blockNumber = null;
+    private Integer blockNumber;
 
     /**
      * Список идентификаторов файлов в блоке
