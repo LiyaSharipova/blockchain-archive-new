@@ -4,8 +4,6 @@ import com.github.liyasharipova.blockchain.archive.file.storage.api.FileApi;
 import com.github.liyasharipova.blockchain.archive.file.storage.dto.FileDto;
 import com.github.liyasharipova.blockchain.archive.file.storage.dto.FileRequest;
 import com.github.liyasharipova.blockchain.archive.file.storage.service.FileService;
-import io.swagger.model.Body1;
-import io.swagger.model.InlineResponse200;
 import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
@@ -15,13 +13,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.multipart.MultipartFile;
 
-import javax.persistence.Id;
 import javax.websocket.server.PathParam;
-import java.io.File;
 import java.io.IOException;
 import java.util.List;
 

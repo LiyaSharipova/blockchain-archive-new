@@ -1,10 +1,19 @@
 package com.github.liyasharipova.blockchain.archive.node.service;
 
-import com.github.liyasharipova.blockchain.archive.node.dto.FutureBlock;
+import com.github.liyasharipova.blockchain.archive.node.dto.BlockDto;
+import com.github.liyasharipova.blockchain.archive.node.dto.NonceRangeDto;
+import com.github.liyasharipova.blockchain.archive.node.repository.BlockRepository;
+import com.github.liyasharipova.blockchain.archive.node.repository.TransactionRepository;
+import com.github.liyasharipova.blockchain.archive.node.util.StringUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Сервис для работы с блокчейном
@@ -14,16 +23,61 @@ import javax.transaction.Transactional;
 @Transactional
 public class BlockchainService {
 
+    @Value("${difficulty}")
+    private int DIFFICULTY;
+
+    private List<BlockDto> blockchain = new ArrayList<>();
+
+    @Autowired
+    private BlockRepository blockRepository;
+
+    @Autowired
+    private TransactionRepository transactionRepository;
+
+    @Value("${application.host}")
+    private String applicationHost;
+
+    @Value("${application.port}")
+    private String applicationPort;
+
+    @Autowired
+    private BlockService blockService;
+
     //todo здесь будет цепочка блоков -- поле
-    public void mineBlockAndPlaceToBlockchain(FutureBlock block) {
-        mineBlock(block);
+    public void mineBlockAndPlaceToBlockchain(BlockDto block) {
+
+        RestTemplate restTemplate = new RestTemplate();
+        String url = "http://" + applicationHost + ":" + applicationPort + "/nonces";
+        NonceRangeDto nonceRange = restTemplate.getForObject(url, NonceRangeDto.class);
+        mineBlock(block, nonceRange);
+        blockchain.add(block);
     }
 
+    //    /**
+    //     * todo Нужно замайнить блок, потом положить его в блокчейн
+    //     *
+    //     * @param block
+    //     */
+    //    private void mineBlock(FutureBlock block) {
+    //    }
+
     /**
-     * todo Нужно замайнить блок, потом положить его в блокчейн
-     *
-     * @param block
+     * Увеличиваем значение nonce пока нужный хэш не будет найден
      */
-    private void mineBlock(FutureBlock block) {
+    public void mineBlock(BlockDto block, NonceRangeDto nonceRange) {
+        block.setNonce(nonceRange.getBeginNonce());
+        block.setMerkleRoot(StringUtil.getMerkleRoot(block.getTransactions()));
+        String target = StringUtil.getDificultyString(DIFFICULTY); //Create a string with difficulty * "0"
+
+        String blockHash = null;
+        while (!block.getHash().substring(0, DIFFICULTY).equals(target)
+                && !block.getNonce().equals(nonceRange.getEndNonce())) {
+            block.increaseNonce();
+            blockHash = blockService.calculateHash(block);
+        }
+
+        //todo если майнинг будет неуспешным, то нужно  будет запросить вновь NonceRangeDto
+        log.info("Block mined with hash {} ", block.getHash().substring(0, 6));
     }
+
 }

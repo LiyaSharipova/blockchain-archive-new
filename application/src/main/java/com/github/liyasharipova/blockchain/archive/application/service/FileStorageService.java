@@ -56,7 +56,7 @@ public class FileStorageService {
         return restTemplate.getForObject(url, Resource.class);
     }
 
-    public void uploadFile(MultipartFile file, String hash) {
+    public Long uploadFile(MultipartFile file, String hash) {
         RestTemplate restTemplate = new RestTemplate();
 
         String uri = FILE_STORAGE_URL + "/upload-file";
@@ -69,5 +69,7 @@ public class FileStorageService {
         } catch (IOException e) {
             e.printStackTrace();
         }
+//        todo return fileId
+        return null;
     }
 }

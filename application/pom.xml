@@ -96,19 +96,6 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
-            <plugin>
-                <groupId>io.swagger</groupId>
-                <artifactId>swagger-codegen-maven-plugin</artifactId>
-                <version>2.3.1</version>
-
-                <configuration>
-                    <inputSpec>${project.basedir}/src/main/resources/spec/application.json</inputSpec>
-                    <language>spring</language>
-                    <library>spring-boot</library>
-                    <output>${build.directory}/generated-sources/java</output>
-                </configuration>
-            </plugin>
-
         </plugins>
     </build>
 

@@ -1,12 +1,11 @@
 package com.github.liyasharipova.blockchain.archive.application.controller;
 
 import com.github.liyasharipova.blockchain.archive.application.api.FileApi;
+import com.github.liyasharipova.blockchain.archive.application.dto.Transaction;
 import com.github.liyasharipova.blockchain.archive.application.exception.StorageFileNotFoundException;
 import com.github.liyasharipova.blockchain.archive.application.service.FileStorageService;
 import com.github.liyasharipova.blockchain.archive.application.service.HashingService;
 import com.github.liyasharipova.blockchain.archive.application.service.NodeService;
-import io.swagger.model.InlineResponse2001;
-import io.swagger.model.InlineResponse2002;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
@@ -23,16 +22,15 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import java.io.IOException;
+import java.util.Date;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 
 @Controller
 @Slf4j
-public class FileController implements FileApi{
+public class FileController implements FileApi {
 
     private FileStorageService fileStorageService;
 
@@ -81,24 +79,19 @@ public class FileController implements FileApi{
             String hash = hashingService.hash(file.getBytes());
 
             //Отправить параллельно файл в хранилище данных
-            executorService.submit(() -> fileStorageService.uploadFile(file, hash));
-
+            fileStorageService.uploadFile(file, hash);
+            //            todo get fileId from file storage
+            Long fileId = fileStorageService.uploadFile(file, hash);
+            Transaction transaction = new Transaction(fileId, hash, new Date().getTime());
             //Отправить параллельно его хэш всем нодам
-            executorService.submit(() -> nodeService.sendHash(hash));
+            nodeService.sendFileInfo(transaction);
 
         } catch (IOException e) {
             log.warn(e.getMessage(), e.getCause());
             throw e;
         }
 
-        // Ждем завршения всех потоков
-        boolean isFinished = false;
-        try {
-            isFinished = executorService.awaitTermination(5, TimeUnit.SECONDS);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        log.info("Файл и хэш были отправлены в хранилище и нодам: {}", isFinished);
+        log.info("Файл и хэш были отправлены в хранилище и нодам: {}");
 
         redirectAttributes.addAttribute("message",
                                         "Вы успешно загрузили файл с именем " + file.getOriginalFilename());

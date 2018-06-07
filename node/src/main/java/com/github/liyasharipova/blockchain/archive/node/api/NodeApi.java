@@ -1,20 +1,17 @@
 package com.github.liyasharipova.blockchain.archive.node.api;
 
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
-import io.swagger.model.Body1;
-import io.swagger.model.InlineResponse2002;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.validation.Valid;
 
 public interface NodeApi {
 
     /**
-     * Проверка валидноси цепочки блоков до заданного блока и наличия хеша в указанном блоке
+     * Проверка валидности цепочки блоков до заданного блока и наличия хеша в указанном блоке
      *
      * @param blockNumber Номер блока, до которого будет проверка
      */

@@ -3,7 +3,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html>
-<miningInfoRequest>
+<body>
 
 <c:if test="${empty message}">
     <c:out value="${message}"/>
@@ -36,5 +36,5 @@
 </div>
 
 
-</miningInfoRequest>
+</body>
 </html>

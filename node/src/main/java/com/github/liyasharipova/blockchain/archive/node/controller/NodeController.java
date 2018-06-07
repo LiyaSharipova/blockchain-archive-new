@@ -1,7 +1,6 @@
 package com.github.liyasharipova.blockchain.archive.node.controller;
 
 import com.github.liyasharipova.blockchain.archive.node.api.NodeApi;
-import io.swagger.model.InlineResponse2002;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;

@@ -1,7 +1,7 @@
 package com.github.liyasharipova.blockchain.archive.node.service;
 
+import com.github.liyasharipova.blockchain.archive.node.dto.BlockDto;
 import com.github.liyasharipova.blockchain.archive.node.dto.BlocksQueue;
-import com.github.liyasharipova.blockchain.archive.node.dto.FutureBlock;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -32,15 +32,16 @@ public class MinerLoop implements CommandLineRunner {
     @Override
     public void run(String... strings) throws Exception {
         while (true) {
-            Queue<FutureBlock> blocksQueue = BlocksQueue.getBlocksQueue();
+            Queue<BlockDto> blocksQueue = BlocksQueue.getBlocksQueue();
             // Пока не замайнятся все блоки из очереди, доставать их по одному и майнить
             while (!blocksQueue.isEmpty()) {
-                FutureBlock block = blocksQueue.peek();
+                BlockDto block = blocksQueue.peek();
                 blockchainService.mineBlockAndPlaceToBlockchain(block);
 
                 // todo здесь дождаться, чтобы все ноды сказали ок после своего майнинга и проверки nonce
+                // todo но это нужно делать не здесь,  чтобы майнинг продолжался
                 blocksQueue.remove();
-                log.info("Замайнен блок: {}", block.getHashes());
+                log.info("Замайнен блок: {}", block.getTransactions());
             }
             Thread.sleep(blockQueueCheckPeriod * 1000);
         }

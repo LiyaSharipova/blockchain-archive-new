@@ -15,7 +15,7 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor
 @NoArgsConstructor
 @Validated
-public class FileRequest {
+public class Transaction {
 
     @JsonProperty("id")
     @NotNull
@@ -24,6 +24,11 @@ public class FileRequest {
     @JsonProperty("hash")
     @NotNull
     private String hash;
+
+    @JsonProperty("uploaded-date-time")
+    @NotNull
+    private long uploadDateTime;
+
 
 }
 

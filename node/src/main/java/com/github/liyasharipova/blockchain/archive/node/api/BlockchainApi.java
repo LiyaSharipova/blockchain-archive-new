@@ -4,7 +4,6 @@ import com.github.liyasharipova.blockchain.archive.node.dto.request.MiningInfoRe
 import com.github.liyasharipova.blockchain.archive.node.dto.request.NonceCheckRequest;
 import com.github.liyasharipova.blockchain.archive.node.dto.response.NonceCheckResponse;
 import io.swagger.annotations.ApiParam;
-import io.swagger.model.InlineResponse2001;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,7 +29,7 @@ public interface BlockchainApi {
     @RequestMapping(value = "/receive-mined-block-info",
                     consumes = {"application/json"},
                     method = RequestMethod.POST)
-    ResponseEntity<NonceCheckResponse> receiveMinedBlockInfoPost(@ApiParam(value = "") @Valid @RequestBody NonceCheckRequest nonceCheckRequest);
+    ResponseEntity<NonceCheckResponse> receiveMinedBlockInfoPost(@Valid @RequestBody NonceCheckRequest nonceCheckRequest);
 
     /**
      * Получение ошибки проверки полученного nonce от ноды, которая первая смогла вычислить хеш заданной сложности, для дальнейшего запуска self-check. Метод будет альтернативой синхронного ответа вместо отправки response c /receive-mined-block-info
@@ -45,5 +44,5 @@ public interface BlockchainApi {
     @RequestMapping(value = "/stop-mining",
                     consumes = {"application/json"},
                     method = RequestMethod.POST)
-    ResponseEntity<Object> stopMining(@ApiParam(value = "") @Valid @RequestBody MiningInfoRequest miningInfoRequest);
+    ResponseEntity<Object> stopMining(@Valid @RequestBody MiningInfoRequest miningInfoRequest);
 }

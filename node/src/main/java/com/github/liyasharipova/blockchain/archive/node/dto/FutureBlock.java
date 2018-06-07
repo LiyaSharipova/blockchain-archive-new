@@ -1,6 +1,5 @@
 package com.github.liyasharipova.blockchain.archive.node.dto;
 
-import io.swagger.model.Hash;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -20,7 +19,7 @@ public class FutureBlock {
     private boolean isAddingSuccessful;
 
     /** Список хэшей файлов с их идентификаторами в списке храниилищ */
-    private List<Hash> hashes = new ArrayList<>();
+    private List<String> hashes = new ArrayList<>();
 
 
 }

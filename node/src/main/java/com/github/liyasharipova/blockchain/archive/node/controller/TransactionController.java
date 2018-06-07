@@ -1,14 +1,13 @@
 package com.github.liyasharipova.blockchain.archive.node.controller;
 
 import com.github.liyasharipova.blockchain.archive.node.api.TransactionApi;
+import com.github.liyasharipova.blockchain.archive.node.dto.request.Transaction;
 import com.github.liyasharipova.blockchain.archive.node.service.TransactionService;
-import io.swagger.model.Hash;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 
 /**
- * Контроллер, в
+ *
  */
 @Controller
 public class TransactionController implements TransactionApi {
@@ -22,7 +21,7 @@ public class TransactionController implements TransactionApi {
     }
 
     @Override
-    public Long receiveHash(Hash hash) {
-
-        return ResponseEntity.ok(transactionService.processHashForBlockchain(hash));    }
+    public Long receiveHash(Transaction transaction) {
+        return transactionService.processTransactionForBlockchain(transaction);
+    }
 }

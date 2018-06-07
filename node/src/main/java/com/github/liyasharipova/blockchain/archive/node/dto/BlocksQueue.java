@@ -5,9 +5,9 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class BlocksQueue {
 
-    private static Queue<FutureBlock> blocksQueue = new ConcurrentLinkedQueue();
+    private static Queue<BlockDto> blocksQueue = new ConcurrentLinkedQueue();
 
-    public static Queue<FutureBlock> getBlocksQueue() {
+    public static Queue<BlockDto> getBlocksQueue() {
         return blocksQueue;
     }
 
