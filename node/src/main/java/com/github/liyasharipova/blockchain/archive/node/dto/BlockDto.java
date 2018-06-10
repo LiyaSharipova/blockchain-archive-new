@@ -37,7 +37,7 @@ public class BlockDto {
     private long timeStamp;
 
     /** сгенерированное случайно число обеспечивающее сложность хеша */
-    private Long nonce = 0;
+    private Long nonce = 0L;
 
     public BlockDto(String previousHash) {
         this.previousHash = previousHash;

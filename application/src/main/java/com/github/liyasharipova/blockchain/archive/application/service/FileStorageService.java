@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.annotation.PostConstruct;
 import javax.validation.constraints.NotBlank;
 import java.io.IOException;
 import java.util.List;
@@ -21,15 +22,16 @@ import java.util.List;
 @Service
 public class FileStorageService {
 
-    @Value("file.storage.server.host")
+    @Value("${file.storage.server.host}")
     private String FILE_STORAGE_SERVER_HOST;
 
-    @Value("file.storage.server.port")
+    @Value("${file.storage.server.port}")
     private String FILE_STORAGE_SERVER_PORT;
 
     private String FILE_STORAGE_URL;
 
-    public FileStorageService() {
+    @PostConstruct
+    public void init(){
         this.FILE_STORAGE_URL = "http://" + FILE_STORAGE_SERVER_HOST + ":" + FILE_STORAGE_SERVER_PORT;
     }
 

@@ -60,7 +60,7 @@ public class FileController implements FileApi {
 
     @GetMapping("/files/{file-id}")
     @ResponseBody
-    public ResponseEntity<Resource> getFile(@NotBlank @PathVariable Long fileId) throws IOException {
+    public ResponseEntity<Resource> getFile(@NotBlank @PathVariable("file-id") Long fileId) throws IOException {
 
         Resource file = fileStorageService.getFile(fileId);
 

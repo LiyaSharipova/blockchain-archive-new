@@ -2,7 +2,6 @@ package com.github.liyasharipova.blockchain.archive.application.service;
 
 import com.github.liyasharipova.blockchain.archive.application.dto.NonceRangeDto;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -17,8 +16,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @Transactional
 public class NonceService {
 
-    @Value("nonce.step")
-    private Long nonceStep;
+    private int nonceStep = 15;
 
     /** Использованные шаги для генерации новых диапазоново nonce для каждого блока */
     private Map<Long, Long> usedNoncesRange = new ConcurrentHashMap<>();
@@ -29,11 +27,11 @@ public class NonceService {
 
         // 0-15 при nonceStep = 15
         if (nonceCounter == 0) {
-            usedNoncesRange.replace(blockId, nonceCounter, nonceCounter++);
-            return new NonceRangeDto(0L, nonceStep);
+            usedNoncesRange.replace(blockId, nonceCounter + 1);
+            return new NonceRangeDto(0L, new Long(nonceStep));
         }
         // 16-30, 31-45 при nonceStep = 15
-        usedNoncesRange.replace(blockId, nonceCounter, nonceCounter++);
+        usedNoncesRange.replace(blockId, nonceCounter + 1);
         return new NonceRangeDto(nonceCounter * nonceStep + 1, (nonceCounter + 1) * nonceStep);
     }
 }
