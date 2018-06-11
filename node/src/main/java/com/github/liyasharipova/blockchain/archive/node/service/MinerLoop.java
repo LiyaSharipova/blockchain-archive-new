@@ -19,7 +19,7 @@ import java.util.Queue;
 @Slf4j
 public class MinerLoop implements CommandLineRunner {
 
-    @Value("block.queue.check.period")
+    @Value("${block.queue.check.period}")
     private Integer blockQueueCheckPeriod;
 
     private BlockchainService blockchainService;

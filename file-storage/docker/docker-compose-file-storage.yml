@@ -1,0 +1,19 @@
+# Use postgres/example user/password credentials
+version: '3.1'
+
+services:
+
+  file-storage:
+    container_name: file-storage
+    image: postgres
+    restart: always
+    ports:
+      - 5436:5432
+    environment:
+      POSTGRES_PASSWORD: example
+      POSTGRES_DB: file-storage
+    networks:
+      - file-storage-network
+networks:
+  file-storage-network:
+    driver: bridge

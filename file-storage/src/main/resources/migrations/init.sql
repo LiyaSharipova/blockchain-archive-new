@@ -1,4 +1,6 @@
-create table public.file
+create schema if not exists public;
+
+create table if not exists public.file
 (
   id   bigserial primary key,
   name varchar(255) not null,
