@@ -1,0 +1,18 @@
+# Use postgres/example user/password credentials
+version: '3.1'
+
+services:
+
+  node-db-2:
+    container_name: node-db-2
+    image: postgres
+    restart: always
+    ports:
+      - 5434:5432
+    environment:
+      POSTGRES_PASSWORD: example
+    networks:
+      - node-network-2
+networks:
+  node-network-2:
+    driver: bridge
