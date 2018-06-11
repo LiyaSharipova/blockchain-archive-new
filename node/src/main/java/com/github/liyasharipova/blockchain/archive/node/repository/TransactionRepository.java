@@ -7,5 +7,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface TransactionRepository extends JpaRepository<TransactionEntity, Long> {
 
-    TransactionEntity findByFileName(String filename);
+    TransactionEntity findByFileId(String fileId);
 }

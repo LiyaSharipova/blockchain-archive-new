@@ -29,7 +29,7 @@ public class NodeService {
         // Отправка хэша каждой ноде
         for (int i = 0; i < nodeHosts.size(); i++) {
             String uri = "http://" + nodeHosts.get(i) + ":" + nodePorts.get(i) + "/receive-file-info";
-            restTemplate.postForObject(uri, transaction, String.class);
+            Long transactionId = restTemplate.postForObject(uri, transaction, Long.class);
             log.info("Отправлен хэш к серверу {}:{}", nodeHosts.get(i), nodePorts.get(i));
 
         }

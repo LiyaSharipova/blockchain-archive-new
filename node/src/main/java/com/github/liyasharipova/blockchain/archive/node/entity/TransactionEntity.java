@@ -6,39 +6,48 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+/**
+ *
+ */
 @Entity
-@Table(name = "transaction")
+@Table(name = "transaction", schema = "public")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class TransactionEntity {
-
     @Id
     @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
     @Column(name = "file_hash")
     private String fileHash;
 
-    @Column(name = "block_hash")
+    @Column(name = "file_id")
+    private Long fileId;
 
-    private String blockHash;
+    @ManyToOne
+    @JoinColumn(name = "block_hash")
+    private BlockEntity blockHash;
 
-    @Column(name = "user_id")
-    private String userId;
+    @Column(name = "uploaded_time")
+    private Long uploadedTime;
 
-    @Column(name = "create_time")
-    private long createTime;
+    public TransactionEntity(String fileHash, Long fileId, BlockEntity blockHash, Long uploadedTime) {
+        this.fileHash = fileHash;
+        this.fileId = fileId;
+        this.blockHash = blockHash;
+        this.uploadedTime = uploadedTime;
+    }
 
-    @Column(name = "file_name")
-    private String fileName;
-
-    @Column(name = "file_data")
-    private byte[] fileData;
+    public TransactionEntity(String fileHash, Long fileId, Long uploadedTime) {
+        this.fileHash = fileHash;
+        this.fileId = fileId;
+        this.uploadedTime = uploadedTime;
+    }
 }
