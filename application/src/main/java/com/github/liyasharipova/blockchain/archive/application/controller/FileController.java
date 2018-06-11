@@ -1,11 +1,11 @@
 package com.github.liyasharipova.blockchain.archive.application.controller;
 
-import com.github.liyasharipova.blockchain.archive.application.api.FileApi;
-import com.github.liyasharipova.blockchain.archive.application.dto.Transaction;
+import com.github.liyasharipova.blockchain.application.api.FileApi;
 import com.github.liyasharipova.blockchain.archive.application.exception.StorageFileNotFoundException;
 import com.github.liyasharipova.blockchain.archive.application.service.FileStorageService;
 import com.github.liyasharipova.blockchain.archive.application.service.HashingService;
 import com.github.liyasharipova.blockchain.archive.application.service.NodeService;
+import com.github.liyasharipova.blockchain.node.api.dto.request.TransactionDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
@@ -52,18 +52,20 @@ public class FileController implements FileApi {
 
     @GetMapping("/")
     public String listUploadedFiles(Model model) {
-
         model.addAttribute("files", fileStorageService.getAllFiles());
-
         return "uploadPage";
+    }
+
+    @Deprecated
+    @GetMapping("/files")
+    public String listUploadedFilesFromRoot() {
+        return "redirect:/";
     }
 
     @GetMapping("/files/{file-id}")
     @ResponseBody
     public ResponseEntity<Resource> getFile(@NotBlank @PathVariable("file-id") Long fileId) throws IOException {
-
         Resource file = fileStorageService.getFile(fileId);
-
         return ResponseEntity.ok()
                              .contentLength(file.contentLength())
                              .contentType(MediaType.APPLICATION_OCTET_STREAM)
@@ -79,10 +81,8 @@ public class FileController implements FileApi {
             String hash = hashingService.hash(file.getBytes());
 
             //Отправить параллельно файл в хранилище данных
-            fileStorageService.uploadFile(file, hash);
-            //            todo get fileId from file storage
             Long fileId = fileStorageService.uploadFile(file, hash);
-            Transaction transaction = new Transaction(fileId, hash, new Date().getTime());
+            TransactionDto transaction = new TransactionDto(fileId, hash, new Date().getTime());
             //Отправить параллельно его хэш всем нодам
             nodeService.sendFileInfo(transaction);
 

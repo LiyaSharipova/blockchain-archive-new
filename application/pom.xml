@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>application</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>${node-api.version}</version>
     <packaging>war</packaging>
 
     <name>application</name>
@@ -66,6 +66,10 @@
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
@@ -90,6 +94,18 @@
         <dependency>
             <groupId>javax.transaction</groupId>
             <artifactId>javax.transaction-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.github.liyasharipova.blockchain</groupId>
+            <artifactId>application-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.github.liyasharipova.blockchain</groupId>
+            <artifactId>file-storage-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.github.liyasharipova.blockchain</groupId>
+            <artifactId>node-api</artifactId>
         </dependency>
     </dependencies>
 

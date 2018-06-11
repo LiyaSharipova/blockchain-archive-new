@@ -1,8 +1,8 @@
 package com.github.liyasharipova.blockchain.archive.application.controller;
 
-import com.github.liyasharipova.blockchain.archive.application.api.BlockchainApi;
-import com.github.liyasharipova.blockchain.archive.application.dto.request.BlockRequest;
-import com.github.liyasharipova.blockchain.archive.application.dto.request.BlockchainRequest;
+import com.github.liyasharipova.blockchain.application.api.BlockchainApi;
+import com.github.liyasharipova.blockchain.application.api.dto.request.BlockRequest;
+import com.github.liyasharipova.blockchain.application.api.dto.request.BlockchainRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 

@@ -1,6 +1,6 @@
 package com.github.liyasharipova.blockchain.archive.node.dto;
 
-import com.github.liyasharipova.blockchain.archive.node.dto.request.Transaction;
+import com.github.liyasharipova.blockchain.node.api.dto.request.TransactionDto;
 import com.github.liyasharipova.blockchain.archive.node.util.StringUtil;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -31,7 +31,7 @@ public class BlockDto {
     private String merkleRoot;
 
     /** Список транзакций в блоке */
-    private List<Transaction> transactions = new ArrayList<>();
+    private List<TransactionDto> transactions = new ArrayList<>();
 
     /** Время создания блока */
     private long timeStamp;
@@ -60,7 +60,7 @@ public class BlockDto {
     /**
      * Добавляем транзакцию к блоку
      */
-    public boolean addTransaction(Transaction transaction) {
+    public boolean addTransaction(TransactionDto transaction) {
         //если блок не пустой, проверяем валидна ли транзакция
         if (transaction == null) {
             return false;

@@ -1,9 +1,9 @@
 package com.github.liyasharipova.blockchain.archive.application.service;
 
-import com.github.liyasharipova.blockchain.archive.application.dto.FileDto;
+import com.github.liyasharipova.blockchain.filestorage.api.dto.FileDto;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +20,7 @@ import java.util.List;
  * Сервис для работы с данным документа
  */
 @Service
+@Slf4j
 public class FileStorageService {
 
     @Value("${file.storage.server.host}")
@@ -31,7 +32,7 @@ public class FileStorageService {
     private String FILE_STORAGE_URL;
 
     @PostConstruct
-    public void init(){
+    public void init() {
         this.FILE_STORAGE_URL = "http://" + FILE_STORAGE_SERVER_HOST + ":" + FILE_STORAGE_SERVER_PORT;
     }
 
@@ -58,20 +59,20 @@ public class FileStorageService {
         return restTemplate.getForObject(url, Resource.class);
     }
 
-    public Long uploadFile(MultipartFile file, String hash) {
+    public Long uploadFile(MultipartFile file, String hash) throws IOException {
         RestTemplate restTemplate = new RestTemplate();
 
         String uri = FILE_STORAGE_URL + "/upload-file";
 
+        Long fileId = null;
         try {
-            ByteArrayResource byteArrayResource = new ByteArrayResource(file.getBytes());
-            FileDto fileDto = new FileDto(file.getOriginalFilename(), hash, byteArrayResource);
-            restTemplate.postForObject(uri, fileDto, FileDto.class);
+            FileDto fileDto = new FileDto(file.getOriginalFilename(), hash, file.getBytes());
+            fileId = restTemplate.postForObject(uri, fileDto, Long.class);
 
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
+            throw e;
         }
-//        todo return fileId
-        return null;
+        return fileId;
     }
 }

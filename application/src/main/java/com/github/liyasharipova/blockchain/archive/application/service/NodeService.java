@@ -1,13 +1,12 @@
 package com.github.liyasharipova.blockchain.archive.application.service;
 
-import com.github.liyasharipova.blockchain.archive.application.dto.Transaction;
+import com.github.liyasharipova.blockchain.node.api.dto.request.TransactionDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -18,13 +17,13 @@ import java.util.List;
 @Transactional
 public class NodeService {
 
-    @Value("node.host")
-    private List<String> nodeHosts = new ArrayList<>();
+    @Value("#{'${node.hosts}'.split(',')}")
+    private List<String> nodeHosts;
 
-    @Value("node.port")
-    private List<String> nodePorts = new ArrayList<>();
+    @Value("#{'${node.ports}'.split(',')}")
+    private List<String> nodePorts;
 
-    public void sendFileInfo(Transaction transaction) {
+    public void sendFileInfo(TransactionDto transaction) {
         RestTemplate restTemplate = new RestTemplate();
 
         // Отправка хэша каждой ноде

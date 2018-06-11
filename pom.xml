@@ -17,8 +17,11 @@
 
     <modules>
         <module>application</module>
+        <module>application-api</module>
         <module>node</module>
+        <module>node-api</module>
         <module>file-storage</module>
+        <module>file-storage-api</module>
     </modules>
 
     <properties>
@@ -28,6 +31,7 @@
         <resteasy-client.version>3.1.2.Final</resteasy-client.version>
         <jackson.version>2.9.5</jackson.version>
         <swagger-annotations.version>1.5.15</swagger-annotations.version>
+        <node-api.version>0.0.1-SNAPSHOT</node-api.version>
     </properties>
 
     <dependencyManagement>
@@ -55,6 +59,21 @@
                 <groupId>io.swagger</groupId>
                 <artifactId>swagger-annotations</artifactId>
                 <version>${swagger-annotations.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.liyasharipova.blockchain</groupId>
+                <artifactId>node-api</artifactId>
+                <version>${node-api.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.liyasharipova.blockchain</groupId>
+                <artifactId>file-storage-api</artifactId>
+                <version>0.0.1-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.liyasharipova.blockchain</groupId>
+                <artifactId>application-api</artifactId>
+                <version>0.0.1-SNAPSHOT</version>
             </dependency>
 
 

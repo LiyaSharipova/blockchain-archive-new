@@ -6,13 +6,16 @@ services:
   node-db-2:
     container_name: node-db-2
     image: postgres
-    restart: always
+    restart: "no"
     ports:
       - 5434:5432
     environment:
       POSTGRES_PASSWORD: example
     networks:
       - node-network-2
+    volumes:
+      - ./data-node-2:/var/lib/postgresql/data
+
 networks:
   node-network-2:
     driver: bridge

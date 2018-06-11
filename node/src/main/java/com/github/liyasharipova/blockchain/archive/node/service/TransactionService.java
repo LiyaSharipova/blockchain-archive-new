@@ -2,7 +2,7 @@ package com.github.liyasharipova.blockchain.archive.node.service;
 
 import com.github.liyasharipova.blockchain.archive.node.dto.BlockDto;
 import com.github.liyasharipova.blockchain.archive.node.dto.BlocksQueue;
-import com.github.liyasharipova.blockchain.archive.node.dto.request.Transaction;
+import com.github.liyasharipova.blockchain.node.api.dto.request.TransactionDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -30,8 +30,8 @@ public class TransactionService {
 
     private BlockDto currentBlock = new BlockDto();
 
-    public Long processTransactionForBlockchain(Transaction transaction) {
-        List<Transaction> currentTransactions = currentBlock.getTransactions();
+    public Long processTransactionForBlockchain(TransactionDto transaction) {
+        List<TransactionDto> currentTransactions = currentBlock.getTransactions();
         int currentTransactionsSize = currentTransactions.size();
         long currentTime = new Date().getTime();
         long lastTransactionTime = currentTransactions.get(currentTransactionsSize - 1).getUploadDateTime();

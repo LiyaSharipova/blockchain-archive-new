@@ -2,11 +2,10 @@ package com.github.liyasharipova.blockchain.archive.node.service;
 
 import com.github.liyasharipova.blockchain.archive.node.dto.BlockDto;
 import com.github.liyasharipova.blockchain.archive.node.dto.BlocksQueue;
-import com.github.liyasharipova.blockchain.archive.node.dto.request.NonceCheckRequest;
-import com.github.liyasharipova.blockchain.archive.node.dto.response.NonceCheckResponse;
+import com.github.liyasharipova.blockchain.node.api.dto.request.NonceCheckRequest;
+import com.github.liyasharipova.blockchain.node.api.dto.response.NonceCheckResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.weaving.DefaultContextLoadTimeWeaver;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;

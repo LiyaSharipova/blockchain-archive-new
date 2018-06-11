@@ -1,6 +1,6 @@
 package com.github.liyasharipova.blockchain.archive.application.service;
 
-import com.github.liyasharipova.blockchain.archive.application.dto.NonceRangeDto;
+import com.github.liyasharipova.blockchain.application.api.dto.NonceRangeDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 

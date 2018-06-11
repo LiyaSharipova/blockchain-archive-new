@@ -1,9 +1,9 @@
 package com.github.liyasharipova.blockchain.archive.node.controller;
 
-import com.github.liyasharipova.blockchain.archive.node.api.BlockchainApi;
-import com.github.liyasharipova.blockchain.archive.node.dto.request.MiningInfoRequest;
-import com.github.liyasharipova.blockchain.archive.node.dto.request.NonceCheckRequest;
-import com.github.liyasharipova.blockchain.archive.node.dto.response.NonceCheckResponse;
+import com.github.liyasharipova.blockchain.node.api.BlockchainApi;
+import com.github.liyasharipova.blockchain.node.api.dto.request.MiningInfoRequest;
+import com.github.liyasharipova.blockchain.node.api.dto.request.NonceCheckRequest;
+import com.github.liyasharipova.blockchain.node.api.dto.response.NonceCheckResponse;
 import com.github.liyasharipova.blockchain.archive.node.service.MiningResultCheckerService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +16,6 @@ import java.util.List;
  *
  */
 @Controller
-@Slf4j
 public class BlockchainController implements BlockchainApi {
 
     private MiningResultCheckerService miningResultCheckerService;

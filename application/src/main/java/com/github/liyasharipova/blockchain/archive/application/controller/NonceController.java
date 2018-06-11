@@ -1,16 +1,14 @@
 package com.github.liyasharipova.blockchain.archive.application.controller;
 
-import com.github.liyasharipova.blockchain.archive.application.api.NonceApi;
-import com.github.liyasharipova.blockchain.archive.application.dto.NonceRangeDto;
-import com.github.liyasharipova.blockchain.archive.application.dto.request.NonceRequest;
+import com.github.liyasharipova.blockchain.application.api.NonceApi;
+import com.github.liyasharipova.blockchain.application.api.dto.NonceRangeDto;
+import com.github.liyasharipova.blockchain.application.api.dto.request.NonceRequest;
 import com.github.liyasharipova.blockchain.archive.application.service.NonceService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;

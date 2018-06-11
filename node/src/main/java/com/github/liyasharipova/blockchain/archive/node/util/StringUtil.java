@@ -1,6 +1,6 @@
 package com.github.liyasharipova.blockchain.archive.node.util;
 
-import com.github.liyasharipova.blockchain.archive.node.dto.request.Transaction;
+import com.github.liyasharipova.blockchain.node.api.dto.request.TransactionDto;
 import com.google.gson.GsonBuilder;
 import ru.ubmb.jstribog.StribogProvider;
 
@@ -88,12 +88,12 @@ public class StringUtil {
         return Base64.getEncoder().encodeToString(key.getEncoded());
     }
 
-    public static String getMerkleRoot(List<Transaction> transactions) {
+    public static String getMerkleRoot(List<TransactionDto> transactions) {
         int count = transactions.size();
 
 //      собираем все хеши транзакций в список previousTreeLayer
         ArrayList<String> previousTreeLayer = new ArrayList<String>();
-        for (Transaction transaction : transactions) {
+        for (TransactionDto transaction : transactions) {
             previousTreeLayer.add(transaction.getHash());
         }
         ArrayList<String> treeLayer = previousTreeLayer;

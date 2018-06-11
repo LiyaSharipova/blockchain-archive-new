@@ -6,14 +6,16 @@ services:
   file-storage:
     container_name: file-storage
     image: postgres
-    restart: always
+    restart: "no"
     ports:
       - 5436:5432
     environment:
       POSTGRES_PASSWORD: example
-      POSTGRES_DB: file-storage
     networks:
       - file-storage-network
+    volumes:
+      - ./data/:/var/lib/postgresql/data
+
 networks:
   file-storage-network:
     driver: bridge
