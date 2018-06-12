@@ -44,7 +44,6 @@ public class BlockchainService {
     @Autowired
     private BlockService blockService;
 
-    //todo здесь будет цепочка блоков -- поле
     public void mineBlockAndPlaceToBlockchain(BlockDto block) {
 
         RestTemplate restTemplate = new RestTemplate();

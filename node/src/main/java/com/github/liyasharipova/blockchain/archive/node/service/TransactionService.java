@@ -25,7 +25,7 @@ public class TransactionService {
      */
     @Value("${block.maximum.transactions}")
     //todo убрать захардкоженные значения, но спринг не подставляет @Value
-    private static int MAXIMUM_TRANSACTIONS_PER_BLOCK = 4;
+    private static int MAXIMUM_TRANSACTIONS_PER_BLOCK = 2;
 
     /**
      * Максимальное время паузы между добавлением транзакций в блок

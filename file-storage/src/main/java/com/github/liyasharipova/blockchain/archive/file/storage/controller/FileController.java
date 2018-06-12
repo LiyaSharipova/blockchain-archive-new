@@ -37,8 +37,8 @@ public class FileController implements FileApi {
     }
 
     @Override
-    @RequestMapping(value = "/files/{file_id}", method = RequestMethod.GET)
-    public ResponseEntity<Resource> getFileById(@NotBlank @PathVariable("file_id") Long fileId)
+    @RequestMapping(value = "/files/{file-id}", method = RequestMethod.GET)
+    public ResponseEntity<Resource> getFileById(@NotBlank @PathVariable("file-id") Long fileId)
             throws IOException {
         Resource file = fileService.getFileById(fileId);
         // Формируем HTTP-response application service-у

@@ -34,6 +34,9 @@ public class MinerLoop implements CommandLineRunner {
         while (true) {
             Queue<BlockDto> blocksQueue = BlocksQueue.getBlocksQueue();
             // Пока не замайнятся все блоки из очереди, доставать их по одному и майнить
+            //todo поставить здесь условие, что нужно не майнит те блоки,
+            // которые уже были замайнены в других нодах.
+            // Информация об этом должна к нам прийти
             while (!blocksQueue.isEmpty()) {
                 BlockDto block = blocksQueue.peek();
                 blockchainService.mineBlockAndPlaceToBlockchain(block);

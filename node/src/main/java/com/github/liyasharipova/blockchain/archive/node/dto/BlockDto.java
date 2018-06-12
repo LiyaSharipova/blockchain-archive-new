@@ -11,6 +11,7 @@ import java.util.UUID;
 @Slf4j
 public class BlockDto {
 
+    @Deprecated
     private UUID uuid;
 
     /**
