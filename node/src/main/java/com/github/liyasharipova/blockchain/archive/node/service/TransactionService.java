@@ -24,13 +24,15 @@ public class TransactionService {
      * Максимальное количество транзакций в блокчейне
      */
     @Value("${block.maximum.transactions}")
-    private static int MAXIMUM_TRANSACTIONS_PER_BLOCK;
+    //todo убрать захардкоженные значения, но спринг не подставляет @Value
+    private static int MAXIMUM_TRANSACTIONS_PER_BLOCK = 4;
 
     /**
      * Максимальное время паузы между добавлением транзакций в блок
      */
     @Value("${maximum.timeout.of.last.transaction.sec}")
-    private static int MAXIMUM_TIMEOUT_OF_LAST_TRANSACTION_SEC;
+    //todo убрать захардкоженные значения, но спринг не подставляет @Value
+    private static int MAXIMUM_TIMEOUT_OF_LAST_TRANSACTION_SEC = 600;
 
     /** Храним текущий блок для заполнения транзакциями */
     private BlockDto currentBlock = new BlockDto();

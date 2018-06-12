@@ -7,7 +7,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface FileStorageRepository extends CrudRepository<FileEntity, Long> {
 
-    FileEntity getFileByHash(String fileHash);
-
-    FileEntity getFileById(Long id);
+    FileEntity getFileEntityById(Long id);
 }

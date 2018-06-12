@@ -10,7 +10,6 @@ import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,6 +26,7 @@ public class FileService {
 
         fileStorageRepository.findAll().forEach(fileEntity -> {
             FileDto fileDto = new FileDto();
+            fileDto.setId(fileEntity.getId());
             fileDto.setName(fileEntity.getName());
             fileDto.setHash(fileEntity.getHash());
             files.add(fileDto);
@@ -44,7 +44,7 @@ public class FileService {
     }
 
     public Resource getFileById(Long id) {
-        byte[] data = fileStorageRepository.getFileById(id).getData();
+        byte[] data = fileStorageRepository.getFileEntityById(id).getData();
         return new ByteArrayResource(data);
     }
 }

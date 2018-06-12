@@ -2,15 +2,16 @@ package com.github.liyasharipova.blockchain.archive.node.dto;
 
 import com.github.liyasharipova.blockchain.node.api.dto.request.TransactionDto;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.LinkedList;
+import java.util.UUID;
 
 @Data
 @Slf4j
-@NoArgsConstructor
 public class BlockDto {
+
+    private UUID uuid;
 
     /**
      * Добавился ли блок в блокчейн после всех проверок
@@ -42,6 +43,10 @@ public class BlockDto {
      * сгенерированное случайно число обеспечивающее сложность хеша
      */
     private Long nonce = 0L;
+
+    public BlockDto() {
+        this.uuid = UUID.randomUUID();
+    }
 
     /**
      * Добавляем транзакцию к блоку

@@ -3,7 +3,6 @@ package com.github.liyasharipova.blockchain.archive.node.controller;
 import com.github.liyasharipova.blockchain.archive.node.dto.SelfCheckResultDto;
 import com.github.liyasharipova.blockchain.archive.node.service.NodeService;
 import com.github.liyasharipova.blockchain.node.api.NodeApi;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
