@@ -40,7 +40,12 @@
             <systemPath>${project.basedir}/libs/JCA-1.0-SNAPSHOT.jar</systemPath>
         </dependency>
 
-        <!-- JSTL -->
+        <dependency>
+            <groupId>org.apache.tomcat.embed</groupId>
+            <artifactId>tomcat-embed-jasper</artifactId>
+            <!--Не расскоментирова, не запустится-->
+            <!--<scope>provided</scope>-->
+        </dependency>
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>jstl</artifactId>
