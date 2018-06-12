@@ -29,6 +29,6 @@ public class NonceCheckResponse {
      * @return blockNumber
      **/
     @JsonProperty("blockNumber")
-    private Integer blockNumber;
+    private Long blockNumber;
 }
 

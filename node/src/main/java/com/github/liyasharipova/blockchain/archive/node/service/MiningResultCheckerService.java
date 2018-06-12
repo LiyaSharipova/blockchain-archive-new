@@ -2,6 +2,7 @@ package com.github.liyasharipova.blockchain.archive.node.service;
 
 import com.github.liyasharipova.blockchain.archive.node.dto.BlockDto;
 import com.github.liyasharipova.blockchain.archive.node.dto.BlocksQueue;
+import com.github.liyasharipova.blockchain.archive.node.dto.SelfCheckResultDto;
 import com.github.liyasharipova.blockchain.archive.node.util.StringUtil;
 import com.github.liyasharipova.blockchain.node.api.dto.request.NonceCheckRequest;
 import com.github.liyasharipova.blockchain.node.api.dto.response.NonceCheckResponse;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -52,13 +54,18 @@ public class MiningResultCheckerService {
         String calculatedHash = blockService.calculateHash(checkBlock);
         // Если не совпали, то просим остальные ноды и себя запустить selfcheck()
         if (!nonceCheckRequest.getBlockHash().equals(calculatedHash)) {
-            nodeService.selfCheck();
+            SelfCheckResultDto checkResultDto = nodeService.selfCheck();
             RestTemplate restTemplate = new RestTemplate();
+            List<Long> lengths = new ArrayList<>();
             // Отправка хеша каждой ноде
             for (int i = 0; i < nodeHosts.size(); i++) {
                 if (!nodeHosts.get(i).equals(ownHost)) {
                     String uri = "http://" + nodeHosts.get(i) + ":" + nodePorts.get(i) + "/self-check";
-                    Long length = restTemplate.getForObject(uri, Long.class);
+                    if (checkResultDto.getIsCheckSuccessful()) {
+                        restTemplate.getForObject(uri, Long.class);
+                    } else {
+                        lengths.add(restTemplate.getForObject(uri, Long.class));
+                    }
                     log.info("Отправлен запрос на проверку {}:{}", nodeHosts.get(i), nodePorts.get(i));
                 }
             }
@@ -67,6 +74,8 @@ public class MiningResultCheckerService {
 //            todo остановить майнинг
 //            todo удалить блок из очереди на майнинг
             blockService.saveBlock(checkBlock);
+            blockchainService.addToBlockChain(checkBlock);
+            return new NonceCheckResponse(true, blockchainService.getLastBlockNumber());
         }
 
         //todo проверить, что транзакции те же самые -- но зачем, пока не ясно

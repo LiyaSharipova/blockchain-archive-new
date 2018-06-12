@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.validation.Valid;
+import java.util.List;
 
 public interface NodeApi {
 
@@ -17,19 +18,25 @@ public interface NodeApi {
      */
 
     @RequestMapping(value = "/self-check/{block-number}",
-                    consumes = {"application/json"},
-                    method = RequestMethod.POST)
+            consumes = {"application/json"},
+            method = RequestMethod.POST)
     ResponseEntity<Object> selfCheckBlockNumberPost(@PathVariable("block-number") Long blockNumber,
                                                     @Valid @RequestParam("file-hash") String fileHash);
 
     /**
      * Проверка валидности всей цепочки блоков
      *
-     * @return
-     * code = 200, message = "Успешная проверка цепи",
+     * @return code = 200, message = "Успешная проверка цепи",
      * code = 500, message = "При проверке цепи выявлено несоответствие"
      */
     @RequestMapping(value = "/self-check",
-                    method = RequestMethod.GET)
-    Long selfCheckGet();
+            method = RequestMethod.GET)
+    ResponseEntity<Object> selfCheckGet();
+
+    /**
+     * Запрос на копирование корректные блоков в случае ошибки во время майнинга
+     */
+    @RequestMapping(value = "/copy-blocks",
+            method = RequestMethod.GET)
+    ResponseEntity<List<Object>> copyBlocks();
 }

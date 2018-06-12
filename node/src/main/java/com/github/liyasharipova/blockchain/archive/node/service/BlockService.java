@@ -42,7 +42,7 @@ public class BlockService {
             TransactionEntity transactionEntity = new TransactionEntity();
             transactionEntity.setFileHash(transactionDto.getHash());
             transactionEntity.setUploadedTime(transactionDto.getUploadDateTime());
-            transactionEntity.setBlockHash(blockEntity);
+            transactionEntity.setBlockEntity(blockEntity);
             blockEntity.getTransactions().add(transactionEntity);
         });
         blockRepository.save(blockEntity);
