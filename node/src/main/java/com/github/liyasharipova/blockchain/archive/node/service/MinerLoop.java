@@ -43,7 +43,7 @@ public class MinerLoop implements CommandLineRunner {
 
             while (!blocksQueue.isEmpty() && (!blockService.isThisBlockInSuccessfulBlocks(blocksQueue.peek()))) {
                 blockchainService.mineBlockAndPlaceToBlockchain(blocksQueue.peek());
-
+                block = blocksQueue.peek();
                 // todo здесь дождаться, чтобы все ноды сказали ок после своего майнинга и проверки nonce
                 // todo но это нужно делать не здесь,  чтобы майнинг продолжался
                 blocksQueue.remove();
