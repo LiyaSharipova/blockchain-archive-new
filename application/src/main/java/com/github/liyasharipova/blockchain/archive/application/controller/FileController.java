@@ -72,10 +72,31 @@ public class FileController implements FileApi {
                              .body(file);
     }
 
-    @PostMapping(value = "/upload-file", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    /**
+     * Заглушка, так как на uploadFile.jsp урл всегда /
+     */
+    @PostMapping(value = "/",
+                 consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public String uploadFileFromRoot(@RequestParam("file") MultipartFile file,
+                                     RedirectAttributes redirectAttributes) throws IOException {
+
+        uploadFileProcessing(file, redirectAttributes);
+
+        return "redirect:/";
+    }
+
+    @PostMapping(value = "/upload-file",
+                 consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public String uploadFile(@RequestParam("file") MultipartFile file,
                              RedirectAttributes redirectAttributes) throws IOException {
 
+        uploadFileProcessing(file, redirectAttributes);
+
+        return "redirect:/";
+    }
+
+    private void uploadFileProcessing(MultipartFile file, RedirectAttributes redirectAttributes)
+            throws IOException {
         try {
 
             String hash = hashingService.hash(file.getBytes());
@@ -95,8 +116,6 @@ public class FileController implements FileApi {
 
         redirectAttributes.addAttribute("message",
                                         "Вы успешно загрузили файл с именем " + file.getOriginalFilename());
-
-        return "redirect:/";
     }
 
     @ExceptionHandler(StorageFileNotFoundException.class)
