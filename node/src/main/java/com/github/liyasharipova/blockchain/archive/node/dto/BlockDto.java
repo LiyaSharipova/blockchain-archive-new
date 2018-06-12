@@ -1,15 +1,11 @@
 package com.github.liyasharipova.blockchain.archive.node.dto;
 
 import com.github.liyasharipova.blockchain.node.api.dto.request.TransactionDto;
-import com.github.liyasharipova.blockchain.archive.node.util.StringUtil;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.LinkedList;
-import java.util.List;
 
 @Data
 @Slf4j
@@ -46,7 +42,6 @@ public class BlockDto {
      * сгенерированное случайно число обеспечивающее сложность хеша
      */
     private Long nonce = 0L;
-
 
     /**
      * Добавляем транзакцию к блоку
