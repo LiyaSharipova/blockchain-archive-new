@@ -65,19 +65,27 @@ public class BlockchainService {
      * Увеличиваем значение nonce пока нужный хэш не будет найден
      */
     public void mineBlock(BlockDto block, NonceRangeDto nonceRange) {
+        block.setPreviousHash(getLastBlockHash());
         block.setNonce(nonceRange.getBeginNonce());
         block.setMerkleRoot(StringUtil.getMerkleRoot(block.getTransactions()));
         String target = StringUtil.getDificultyString(DIFFICULTY); //Create a string with difficulty * "0"
 
-        String blockHash = null;
         while (!block.getHash().substring(0, DIFFICULTY).equals(target)
                 && !block.getNonce().equals(nonceRange.getEndNonce())) {
             block.increaseNonce();
-            blockHash = blockService.calculateHash(block);
+            block.setHash(blockService.calculateHash(block));
+
         }
 
         //todo если майнинг будет неуспешным, то нужно  будет запросить вновь NonceRangeDto
         log.info("Block mined with hash {} ", block.getHash().substring(0, 6));
+    }
+
+    public String getLastBlockHash() {
+        if (blockchain.size() == 0) {
+            return "0";
+        }
+        return blockchain.get(blockchain.size() - 1).getHash();
     }
 
 }

@@ -28,6 +28,7 @@ public class MiningResultCheckerService {
 
     public NonceCheckResponse checkMinedBlockInfo(NonceCheckRequest nonceCheckRequest) {
         BlockDto lastBlock = BlocksQueue.getBlocksQueue().peek();
+
         Long possibleCorrectNonce = nonceCheckRequest.getNonce();
         //todo создать новый блок, чтобы ... что состояние обновленного blockDto не будет конфликтовать с другими сервисами,
         // так как он используется в разных местах
@@ -38,6 +39,7 @@ public class MiningResultCheckerService {
 
         } else {
             //А если все нормально, остановить майнинг и добавить в блокчейн замайненный блок
+
         }
         //todo проверить, что транзакции те же самые -- но зачем, пока не ясно
 
