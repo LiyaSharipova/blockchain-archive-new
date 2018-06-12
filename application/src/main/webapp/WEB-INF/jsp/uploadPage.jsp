@@ -10,7 +10,7 @@
 </c:if>
 
 <div>
-    <form method="POST" enctype="multipart/form-data" action="/">
+    <form method="POST" enctype="multipart/form-data" action="/upload-file">
         <table>
             <tr>
                 <td>File to upload:</td>
