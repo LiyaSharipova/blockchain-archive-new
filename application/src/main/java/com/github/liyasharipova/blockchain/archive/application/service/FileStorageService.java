@@ -68,7 +68,6 @@ public class FileStorageService {
         try {
             FileDto fileDto = new FileDto(file.getOriginalFilename(), hash, file.getBytes());
             fileId = restTemplate.postForObject(uri, fileDto, Long.class);
-
         } catch (IOException e) {
             log.error(e.getMessage(), e);
             throw e;

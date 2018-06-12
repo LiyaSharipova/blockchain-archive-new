@@ -5,13 +5,14 @@ import com.github.liyasharipova.blockchain.application.api.dto.request.BlockRequ
 import com.github.liyasharipova.blockchain.application.api.dto.request.BlockchainRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 
 /**
  *
  */
-@Controller
+@RestController
 public class BlockchainController implements BlockchainApi {
 
     @Override

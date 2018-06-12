@@ -4,9 +4,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.validation.annotation.Validated;
 
 import javax.validation.constraints.NotNull;
+import java.util.UUID;
 
 /**
  * NonceRequest
@@ -18,21 +20,12 @@ import javax.validation.constraints.NotNull;
 public class NonceRequest {
 
     /**
-     * Идентификатор узла
-     *
-     * @return nodeId
-     **/
-    @JsonProperty("node_id")
-    @NotNull
-    private Integer nodeId;
-
-    /**
      * Идентификатор блока для добавления в блокчейн
      *
-     * @return blockId
+     * @return blockUuid
      **/
     @NotNull
-    @JsonProperty("block_id")
-    private Long blockId;
+    @JsonProperty("block_Uuid")
+    private UUID blockUuid;
 }
 

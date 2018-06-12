@@ -1,5 +1,6 @@
 package com.github.liyasharipova.blockchain.archive.node.service;
 
+import com.github.liyasharipova.blockchain.application.api.dto.request.NonceRequest;
 import com.github.liyasharipova.blockchain.archive.node.dto.BlockDto;
 import com.github.liyasharipova.blockchain.archive.node.dto.NonceRangeDto;
 import com.github.liyasharipova.blockchain.archive.node.repository.BlockRepository;
@@ -48,7 +49,8 @@ public class BlockchainService {
 
         RestTemplate restTemplate = new RestTemplate();
         String url = "http://" + applicationHost + ":" + applicationPort + "/nonces";
-        NonceRangeDto nonceRange = restTemplate.getForObject(url, NonceRangeDto.class);
+        NonceRequest request = new NonceRequest(block.getUuid());
+        NonceRangeDto nonceRange = restTemplate.postForObject(url, request, NonceRangeDto.class);
         mineBlock(block, nonceRange);
         blockchain.add(block);
     }
