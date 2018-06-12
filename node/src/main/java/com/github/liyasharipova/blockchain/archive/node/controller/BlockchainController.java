@@ -28,10 +28,6 @@ public class BlockchainController implements BlockchainApi {
         this.miningResultCheckerService = miningResultCheckerService;
     }
 
-    @Override
-    public ResponseEntity<List<Object>> copyBlocks() {
-        return null;
-    }
 
     @Override
     public ResponseEntity<NonceCheckResponse> receiveMinedBlockInfoPost(NonceCheckRequest nonceCheckRequest) {

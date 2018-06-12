@@ -14,13 +14,6 @@ import java.util.List;
 public interface BlockchainApi {
 
     /**
-     * Запрос на копирование корректные блоков в случае ошибки во время майнинга
-     */
-    @RequestMapping(value = "/copy-blocks",
-                    method = RequestMethod.GET)
-    ResponseEntity<List<Object>> copyBlocks();
-
-    /**
      * Получение результата майнинга от ноды, которая первая смогла вычислить хеш заданной сложности
      *
      * @return Результат проверки полученного nonce путем вычисления хеша блока с помощью этого nonce

@@ -25,7 +25,7 @@ import java.util.List;
 public class BlockchainService {
 
     @Value("${difficulty}")
-    private int DIFFICULTY;
+    private int difficulty;
 
     private List<BlockDto> blockchain = new ArrayList<>();
 
@@ -69,9 +69,9 @@ public class BlockchainService {
         block.setPreviousHash(getLastBlockHash());
         block.setNonce(nonceRange.getBeginNonce());
         block.setMerkleRoot(StringUtil.getMerkleRoot(block.getTransactions()));
-        String target = StringUtil.getDificultyString(DIFFICULTY); //Create a string with difficulty * "0"
+        String target = StringUtil.getDificultyString(difficulty); //Create a string with difficulty * "0"
 
-        while (!block.getHash().substring(0, DIFFICULTY).equals(target)
+        while (!block.getHash().substring(0, difficulty).equals(target)
                 && !block.getNonce().equals(nonceRange.getEndNonce())) {
             block.increaseNonce();
             block.setHash(blockService.calculateHash(block));
@@ -88,5 +88,13 @@ public class BlockchainService {
         }
         return blockchain.get(blockchain.size() - 1).getHash();
     }
+
+    public void addToBlockChain(BlockDto blockDto) {
+        blockchain.add(blockDto);
+    }
+    public Long getLastBlockNumber(){
+        return Long.valueOf(blockchain.size());
+    }
+
 
 }

@@ -31,7 +31,7 @@ public class BlockEntity {
     @Column(name = "previous_hash")
     private String previousHash;
 
-    @OneToMany(mappedBy = "blockHash")
+    @OneToMany(mappedBy = "blockEntity")
     private List<TransactionEntity> transactions;
 
     public BlockEntity(String hash, Long nonce, String previousHash) {
