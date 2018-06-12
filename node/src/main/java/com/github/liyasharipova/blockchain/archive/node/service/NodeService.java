@@ -2,9 +2,8 @@ package com.github.liyasharipova.blockchain.archive.node.service;
 
 
 import com.github.liyasharipova.blockchain.archive.node.dto.BlockDto;
-import com.github.liyasharipova.blockchain.archive.node.dto.SelfCheckResultDto;
+import com.github.liyasharipova.blockchain.node.api.dto.response.SelfCheckResultDto;
 import com.github.liyasharipova.blockchain.archive.node.entity.BlockEntity;
-import com.github.liyasharipova.blockchain.archive.node.exception.ChainValidityException;
 import com.github.liyasharipova.blockchain.archive.node.repository.BlockRepository;
 import com.github.liyasharipova.blockchain.node.api.dto.request.TransactionDto;
 import lombok.extern.slf4j.Slf4j;
@@ -56,10 +55,12 @@ public class NodeService {
                     !currentBlock.getHash().substring(0, difficulty).equals(hashTarget)) {
                 checkResultDto.setBlockNumber((long) i);
                 checkResultDto.setIsCheckSuccessful(false);
+                checkResultDto.setLength((long) 0);
                 return checkResultDto;
             }
         }
         checkResultDto.setIsCheckSuccessful(true);
+        checkResultDto.setLength((long) allBlocks.size());
         return checkResultDto;
     }
 

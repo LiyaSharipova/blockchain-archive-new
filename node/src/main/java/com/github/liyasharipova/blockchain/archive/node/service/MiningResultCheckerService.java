@@ -2,7 +2,7 @@ package com.github.liyasharipova.blockchain.archive.node.service;
 
 import com.github.liyasharipova.blockchain.archive.node.dto.BlockDto;
 import com.github.liyasharipova.blockchain.archive.node.dto.BlocksQueue;
-import com.github.liyasharipova.blockchain.archive.node.dto.SelfCheckResultDto;
+import com.github.liyasharipova.blockchain.node.api.dto.response.SelfCheckResultDto;
 import com.github.liyasharipova.blockchain.archive.node.util.StringUtil;
 import com.github.liyasharipova.blockchain.node.api.dto.request.NonceCheckRequest;
 import com.github.liyasharipova.blockchain.node.api.dto.response.NonceCheckResponse;
@@ -13,8 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  *
@@ -56,18 +55,11 @@ public class MiningResultCheckerService {
         if (!nonceCheckRequest.getBlockHash().equals(calculatedHash)) {
             SelfCheckResultDto checkResultDto = nodeService.selfCheck();
             RestTemplate restTemplate = new RestTemplate();
-            List<Long> lengths = new ArrayList<>();
             // Отправка хеша каждой ноде
-            for (int i = 0; i < nodeHosts.size(); i++) {
-                if (!nodeHosts.get(i).equals(ownHost)) {
-                    String uri = "http://" + nodeHosts.get(i) + ":" + nodePorts.get(i) + "/self-check";
-                    if (checkResultDto.getIsCheckSuccessful()) {
-                        restTemplate.getForObject(uri, Long.class);
-                    } else {
-                        lengths.add(restTemplate.getForObject(uri, Long.class));
-                    }
-                    log.info("Отправлен запрос на проверку {}:{}", nodeHosts.get(i), nodePorts.get(i));
-                }
+            if (checkResultDto.getIsCheckSuccessful()) {
+                askOthersForCheck();
+            } else {
+                askToCopyRightBlocks(checkResultDto);
             }
         } else {
             //А если все нормально, остановить майнинг и добавить в блокчейн замайненный блок
@@ -92,4 +84,32 @@ public class MiningResultCheckerService {
         return checkBlock;
     }
 
+    private void askOthersForCheck() {
+        RestTemplate restTemplate = new RestTemplate();
+        for (int i = 0; i < nodeHosts.size(); i++) {
+            if (!nodeHosts.get(i).equals(ownHost)) {
+                String uri = "http://" + nodeHosts.get(i) + ":" + nodePorts.get(i) + "/self-check";
+                restTemplate.getForObject(uri, Long.class);
+                log.info("Отправлен запрос на проверку {}:{}", nodeHosts.get(i), nodePorts.get(i));
+            }
+        }
+    }
+
+    private void askToCopyRightBlocks(SelfCheckResultDto resultDto) {
+        RestTemplate restTemplate = new RestTemplate();
+        Map<String, Long> lengthPerHostAndPort = new HashMap<>();
+        for (int i = 0; i < nodeHosts.size(); i++) {
+            if (!nodeHosts.get(i).equals(ownHost)) {
+                String uri = "http://" + nodeHosts.get(i) + ":" + nodePorts.get(i) + "/self-check";
+                Long length = restTemplate.getForObject(uri, SelfCheckResultDto.class).getLength();
+                lengthPerHostAndPort.put(
+                        nodeHosts.get(i) + ":" + nodePorts.get(i),
+                        length);
+                log.info("Отправлен запрос на проверку {}:{}", nodeHosts.get(i), nodePorts.get(i));
+            }
+        }
+        Map.Entry<String, Long> hostAndPortWithMaxLength = lengthPerHostAndPort.entrySet().stream()
+                .max(Comparator.comparing(Map.Entry::getValue)).get();
+
+    }
 }

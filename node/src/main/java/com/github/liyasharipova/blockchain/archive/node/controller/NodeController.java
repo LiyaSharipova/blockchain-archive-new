@@ -1,6 +1,6 @@
 package com.github.liyasharipova.blockchain.archive.node.controller;
 
-import com.github.liyasharipova.blockchain.archive.node.dto.SelfCheckResultDto;
+import com.github.liyasharipova.blockchain.node.api.dto.response.SelfCheckResultDto;
 import com.github.liyasharipova.blockchain.archive.node.service.NodeService;
 import com.github.liyasharipova.blockchain.node.api.NodeApi;
 import org.springframework.beans.factory.annotation.Autowired;

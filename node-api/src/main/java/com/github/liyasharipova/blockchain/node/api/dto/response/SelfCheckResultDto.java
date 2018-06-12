@@ -1,4 +1,4 @@
-package com.github.liyasharipova.blockchain.archive.node.dto;
+package com.github.liyasharipova.blockchain.node.api.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -10,4 +10,5 @@ import lombok.NoArgsConstructor;
 public class SelfCheckResultDto {
     Boolean isCheckSuccessful;
     Long blockNumber;
+    Long length;
 }
