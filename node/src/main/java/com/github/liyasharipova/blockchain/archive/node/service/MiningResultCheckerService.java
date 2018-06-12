@@ -2,13 +2,17 @@ package com.github.liyasharipova.blockchain.archive.node.service;
 
 import com.github.liyasharipova.blockchain.archive.node.dto.BlockDto;
 import com.github.liyasharipova.blockchain.archive.node.dto.BlocksQueue;
+import com.github.liyasharipova.blockchain.archive.node.util.StringUtil;
 import com.github.liyasharipova.blockchain.node.api.dto.request.NonceCheckRequest;
 import com.github.liyasharipova.blockchain.node.api.dto.response.NonceCheckResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import javax.transaction.Transactional;
+import java.util.List;
 
 /**
  *
@@ -19,30 +23,64 @@ import javax.transaction.Transactional;
 public class MiningResultCheckerService {
 
     private BlockService blockService;
+    private NodeService nodeService;
+    private BlockchainService blockchainService;
+
+    @Value("#{'${node.hosts}'.split(',')}")
+    private List<String> nodeHosts;
+
+    @Value("#{'${node.ports}'.split(',')}")
+    private List<String> nodePorts;
+
+    @Value("${server.port}")
+    private String ownPort;
+
+    @Value("${server.address}")
+    private String ownHost;
 
     @Autowired
     public MiningResultCheckerService(
-            BlockService blockService) {
+            BlockService blockService, NodeService nodeService, BlockchainService blockchainService) {
         this.blockService = blockService;
+        this.nodeService = nodeService;
+        this.blockchainService = blockchainService;
     }
 
     public NonceCheckResponse checkMinedBlockInfo(NonceCheckRequest nonceCheckRequest) {
-        BlockDto lastBlock = BlocksQueue.getBlocksQueue().peek();
 
-        Long possibleCorrectNonce = nonceCheckRequest.getNonce();
-        //todo создать новый блок, чтобы ... что состояние обновленного blockDto не будет конфликтовать с другими сервисами,
-        // так как он используется в разных местах
-        lastBlock.setNonce(possibleCorrectNonce);
-        String calculatedHash = blockService.calculateHash(lastBlock);
+        BlockDto checkBlock = createCheckBlock(nonceCheckRequest);
+        String calculatedHash = blockService.calculateHash(checkBlock);
         // Если не совпали, то просим остальные ноды и себя запустить selfcheck()
         if (!nonceCheckRequest.getBlockHash().equals(calculatedHash)) {
-
+            nodeService.selfCheck();
+            RestTemplate restTemplate = new RestTemplate();
+            // Отправка хеша каждой ноде
+            for (int i = 0; i < nodeHosts.size(); i++) {
+                if (!nodeHosts.get(i).equals(ownHost)) {
+                    String uri = "http://" + nodeHosts.get(i) + ":" + nodePorts.get(i) + "/self-check";
+                    Long length = restTemplate.getForObject(uri, Long.class);
+                    log.info("Отправлен запрос на проверку {}:{}", nodeHosts.get(i), nodePorts.get(i));
+                }
+            }
         } else {
             //А если все нормально, остановить майнинг и добавить в блокчейн замайненный блок
-
+//            todo остановить майнинг
+//            todo удалить блок из очереди на майнинг
+            blockService.saveBlock(checkBlock);
         }
-        //todo проверить, что транзакции те же самые -- но зачем, пока не ясно
 
+        //todo проверить, что транзакции те же самые -- но зачем, пока не ясно
         return null;
     }
+
+    private BlockDto createCheckBlock(NonceCheckRequest nonceCheckRequest) {
+        BlockDto lastBlock = BlocksQueue.getBlocksQueue().peek();
+        BlockDto checkBlock = new BlockDto();
+        checkBlock.setPreviousHash(blockchainService.getLastBlockHash());
+        checkBlock.setTransactions(lastBlock.getTransactions());
+        checkBlock.setMerkleRoot(StringUtil.getMerkleRoot(checkBlock.getTransactions()));
+        checkBlock.setNonce(nonceCheckRequest.getNonce());
+        return checkBlock;
+    }
+
 }

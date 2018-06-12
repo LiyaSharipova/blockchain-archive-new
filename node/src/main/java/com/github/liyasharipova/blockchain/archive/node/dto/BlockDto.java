@@ -16,7 +16,9 @@ import java.util.List;
 @NoArgsConstructor
 public class BlockDto {
 
-    /** Добавился ли блок в блокчейн после всех проверок */
+    /**
+     * Добавился ли блок в блокчейн после всех проверок
+     */
     private boolean isAddingSuccessful;
 
     /**
@@ -25,38 +27,26 @@ public class BlockDto {
      */
     private String hash;
 
-    /** Хэш предыдущего блока */
+    /**
+     * Хэш предыдущего блока
+     */
     private String previousHash;
 
-    /** Хэш, высчитываемый в цикле с помощью конкатенации всех соседних транзакций */
+    /**
+     * Хэш, высчитываемый в цикле с помощью конкатенации всех соседних транзакций
+     */
     private String merkleRoot;
 
-    /** Список транзакций в блоке */
+    /**
+     * Список транзакций в блоке
+     */
     private LinkedList<TransactionDto> transactions = new LinkedList<>();
 
-    /** Время создания блока */
-    private long timeStamp;
-
-    /** сгенерированное случайно число обеспечивающее сложность хеша */
+    /**
+     * сгенерированное случайно число обеспечивающее сложность хеша
+     */
     private Long nonce = 0L;
 
-    public BlockDto(String previousHash) {
-        this.previousHash = previousHash;
-        this.timeStamp = new Date().getTime();
-
-        this.hash = calculateHash();
-    }
-
-    /** Вычисляем новый хэш на основе содержимого блока */
-    public String calculateHash() {
-        String calculatedhash = StringUtil.applyStribog(
-                previousHash +
-                        Long.toString(timeStamp) +
-                        Long.toString(nonce) +
-                        merkleRoot
-        );
-        return calculatedhash;
-    }
 
     /**
      * Добавляем транзакцию к блоку
