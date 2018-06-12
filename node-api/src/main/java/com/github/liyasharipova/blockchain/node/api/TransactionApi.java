@@ -1,7 +1,6 @@
 package com.github.liyasharipova.blockchain.node.api;
 
 import com.github.liyasharipova.blockchain.node.api.dto.request.TransactionDto;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -20,5 +19,5 @@ public interface TransactionApi {
     @RequestMapping(value = "/receive-file-info",
                     consumes = {"application/json"},
                     method = RequestMethod.POST)
-    ResponseEntity<Long> receiveHash(@Valid @RequestBody TransactionDto transaction);
+    void receiveHash(@Valid @RequestBody TransactionDto transaction);
 }

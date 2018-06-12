@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 
 @Data
@@ -31,7 +32,7 @@ public class BlockDto {
     private String merkleRoot;
 
     /** Список транзакций в блоке */
-    private List<TransactionDto> transactions = new ArrayList<>();
+    private LinkedList<TransactionDto> transactions = new LinkedList<>();
 
     /** Время создания блока */
     private long timeStamp;

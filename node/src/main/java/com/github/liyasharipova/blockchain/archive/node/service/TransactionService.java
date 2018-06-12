@@ -9,8 +9,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.Date;
-import java.util.List;
-import java.util.Random;
+import java.util.LinkedList;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -33,27 +32,33 @@ public class TransactionService {
     @Value("${maximum.timeout.of.last.transaction.sec}")
     private static int MAXIMUM_TIMEOUT_OF_LAST_TRANSACTION_SEC;
 
+    /** Храним текущий блок для заполнения транзакциями */
     private BlockDto currentBlock = new BlockDto();
 
-    public Long processTransactionForBlockchain(TransactionDto transaction) {
-        List<TransactionDto> currentTransactions = currentBlock.getTransactions();
-        int currentTransactionsSize = currentTransactions.size();
-        long currentTime = new Date().getTime();
-        long lastTransactionTime = currentTransactions.get(currentTransactionsSize - 1).getUploadDateTime();
-        long tenMinutesInSec = TimeUnit.SECONDS.toMillis(MAXIMUM_TIMEOUT_OF_LAST_TRANSACTION_SEC);
+    /** Храним время последней загрузки транзакции. */
+    private long lastUploadTime = -1L;
 
+    /**
+     * Положить транзакцию в блок, а если блок заполнен,
+     * то поместить его в очередь {@link BlocksQueue} на майнинг
+     */
+    public void processTransactionForBlockchain(TransactionDto transaction) {
+        // Список транзакций в текущем блок
+        LinkedList<TransactionDto> currentTransactions = currentBlock.getTransactions();
+        // Максимум таймаута в мсек
+        long maxTimeoutMillisec = TimeUnit.SECONDS.toMillis(MAXIMUM_TIMEOUT_OF_LAST_TRANSACTION_SEC);
+        // Текущее время в мсек
+        long currentTime = new Date().getTime();
         // Если текущий блок для добавления заполнен,
-        // то добавляем его в очередь для добавления в блокчейн
-        if (currentTransactionsSize == MAXIMUM_TRANSACTIONS_PER_BLOCK
-                || (currentTime - lastTransactionTime) > tenMinutesInSec) {
+        // то добавляем его в очередь для добавления в блокчейн.
+        // Или не в первый раз добавляем транзакцию,
+        // которая произошла больше положенного таймаута после последней
+        if (currentTransactions.size() == MAXIMUM_TRANSACTIONS_PER_BLOCK
+                || (lastUploadTime != -1L && (currentTime - lastUploadTime) > maxTimeoutMillisec)) {
             BlocksQueue.getBlocksQueue().add(currentBlock);
             currentBlock = new BlockDto();
         }
 
         currentBlock.addTransaction(transaction);
-        BlocksQueue.getBlocksQueue().add(currentBlock);
-
-//        return transaction.getId();
-        return (long) (new Random().nextInt(100) + 1);
     }
 }
