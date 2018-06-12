@@ -24,6 +24,8 @@ public class MinerLoop implements CommandLineRunner {
 
     private BlockchainService blockchainService;
 
+    private BlockService blockService;
+
     @Autowired
     public MinerLoop(BlockchainService blockchainService) {
         this.blockchainService = blockchainService;
@@ -37,9 +39,10 @@ public class MinerLoop implements CommandLineRunner {
             //todo поставить здесь условие, что нужно не майнит те блоки,
             // которые уже были замайнены в других нодах.
             // Информация об этом должна к нам прийти
-            while (!blocksQueue.isEmpty()) {
-                BlockDto block = blocksQueue.peek();
-                blockchainService.mineBlockAndPlaceToBlockchain(block);
+            BlockDto block = null;
+
+            while (!blocksQueue.isEmpty() && (!blockService.isThisBlockInSuccessfulBlocks(blocksQueue.peek()))) {
+                blockchainService.mineBlockAndPlaceToBlockchain(blocksQueue.peek());
 
                 // todo здесь дождаться, чтобы все ноды сказали ок после своего майнинга и проверки nonce
                 // todo но это нужно делать не здесь,  чтобы майнинг продолжался
@@ -49,4 +52,5 @@ public class MinerLoop implements CommandLineRunner {
             Thread.sleep(blockQueueCheckPeriod * 1000);
         }
     }
+
 }

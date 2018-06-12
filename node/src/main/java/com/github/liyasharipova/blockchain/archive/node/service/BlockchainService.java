@@ -27,6 +27,7 @@ public class BlockchainService {
     @Value("${difficulty}")
     private int difficulty;
 
+    //todo убрать, так как хранилище только одно -- БД
     private List<BlockDto> blockchain = new ArrayList<>();
 
     @Autowired
@@ -72,10 +73,10 @@ public class BlockchainService {
         String target = StringUtil.getDificultyString(difficulty); //Create a string with difficulty * "0"
 
         while (!block.getHash().substring(0, difficulty).equals(target)
-                && !block.getNonce().equals(nonceRange.getEndNonce())) {
+                && !block.getNonce().equals(nonceRange.getEndNonce()) &&
+                (!blockService.isThisBlockInSuccessfulBlocks(block))) {
             block.increaseNonce();
             block.setHash(blockService.calculateHash(block));
-
         }
 
         //todo если майнинг будет неуспешным, то нужно  будет запросить вновь NonceRangeDto
@@ -92,9 +93,9 @@ public class BlockchainService {
     public void addToBlockChain(BlockDto blockDto) {
         blockchain.add(blockDto);
     }
-    public Long getLastBlockNumber(){
+
+    public Long getLastBlockNumber() {
         return Long.valueOf(blockchain.size());
     }
-
 
 }
