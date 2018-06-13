@@ -28,8 +28,8 @@ public class BlockchainController implements BlockchainApi {
 
     @Override
     public Boolean receiveMinedBlockInfoPost(NonceCheckRequest nonceCheckRequest) {
-        NonceCheckResponse response = miningResultCheckerService.checkMinedBlockInfo(nonceCheckRequest);
-        return false;
+        Boolean response = miningResultCheckerService.checkMinedBlockInfo(nonceCheckRequest);
+        return response;
     }
 
     @Override
