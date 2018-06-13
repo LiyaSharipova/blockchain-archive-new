@@ -27,8 +27,10 @@ public class MinerLoop implements CommandLineRunner {
     private BlockService blockService;
 
     @Autowired
-    public MinerLoop(BlockchainService blockchainService) {
+    public MinerLoop(BlockchainService blockchainService,
+                     BlockService blockService) {
         this.blockchainService = blockchainService;
+        this.blockService = blockService;
     }
 
     @Override
@@ -41,7 +43,9 @@ public class MinerLoop implements CommandLineRunner {
             // Информация об этом должна к нам прийти
             BlockDto block = null;
 
-            while (!blocksQueue.isEmpty() && (!blockService.isThisBlockInSuccessfulBlocks(blocksQueue.peek()))) {
+            while (blocksQueue!=null && blocksQueue.size() != 0
+                    && !blockService.isThisBlockInSuccessfulBlocks(blocksQueue.peek())
+                    ) {
                 blockchainService.mineBlockAndPlaceToBlockchain(blocksQueue.peek());
                 block = blocksQueue.peek();
                 // todo здесь дождаться, чтобы все ноды сказали ок после своего майнинга и проверки nonce
