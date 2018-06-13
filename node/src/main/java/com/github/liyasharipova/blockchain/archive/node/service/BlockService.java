@@ -5,6 +5,7 @@ import com.github.liyasharipova.blockchain.archive.node.dto.SuccessfulMinedByOth
 import com.github.liyasharipova.blockchain.archive.node.entity.BlockEntity;
 import com.github.liyasharipova.blockchain.archive.node.entity.TransactionEntity;
 import com.github.liyasharipova.blockchain.archive.node.repository.BlockRepository;
+import com.github.liyasharipova.blockchain.archive.node.repository.TransactionRepository;
 import com.github.liyasharipova.blockchain.archive.node.util.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,9 @@ public class BlockService {
 
     @Autowired
     BlockRepository blockRepository;
+
+    @Autowired
+    TransactionRepository transactionRepository;
 
     /**
      * Вычисляем новый хэш на основе содержимого блока
@@ -48,6 +52,7 @@ public class BlockService {
             transactionEntity.setUploadedTime(transactionDto.getUploadDateTime());
             transactionEntity.setBlockEntity(blockEntity);
             blockEntity.getTransactions().add(transactionEntity);
+            transactionRepository.save(transactionEntity);
         });
         blockRepository.save(blockEntity);
     }
@@ -57,7 +62,8 @@ public class BlockService {
      * {@link SuccessfulMinedByOthersBlocks#getSuccessfulBlocks()}
      */
     public boolean isThisBlockInSuccessfulBlocks(BlockDto thisBlock) {
-        // Список хешей транзакций в виде строк у проверяемого блока
+        // Список хешей транзакций
+        // в виде строк у проверяемого блока
         ArrayList<String> thisBlockTransactions = new ArrayList<>();
         // Из проверяемого блока вытаскиваем транзакции и кладем каждую в thisBlockTransactions
         thisBlock.getTransactions().forEach(transactionDto -> {
