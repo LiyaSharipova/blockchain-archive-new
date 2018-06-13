@@ -1,14 +1,16 @@
 package com.github.liyasharipova.blockchain.archive.node.service;
 
-import com.github.liyasharipova.blockchain.archive.node.dto.BlockDto;
+import com.github.liyasharipova.blockchain.node.api.dto.response.BlockDto;
 import com.github.liyasharipova.blockchain.archive.node.dto.BlocksQueue;
 import com.github.liyasharipova.blockchain.node.api.dto.response.SelfCheckResultDto;
 import com.github.liyasharipova.blockchain.archive.node.util.StringUtil;
 import com.github.liyasharipova.blockchain.node.api.dto.request.NonceCheckRequest;
-import com.github.liyasharipova.blockchain.node.api.dto.response.NonceCheckResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -101,9 +103,10 @@ public class MiningResultCheckerService {
     private void askToCopyRightBlocks(SelfCheckResultDto resultDto) {
         RestTemplate restTemplate = new RestTemplate();
         Map<String, Long> lengthPerHostAndPort = new HashMap<>();
+        String uri;
         for (int i = 0; i < nodeHosts.size(); i++) {
             if (!nodeHosts.get(i).equals(ownHost)) {
-                String uri = "http://" + nodeHosts.get(i) + ":" + nodePorts.get(i) + "/self-check";
+                uri = "http://" + nodeHosts.get(i) + ":" + nodePorts.get(i) + "/self-check";
                 Long length = restTemplate.getForObject(uri, SelfCheckResultDto.class).getLength();
                 lengthPerHostAndPort.put(
                         nodeHosts.get(i) + ":" + nodePorts.get(i),
@@ -113,6 +116,16 @@ public class MiningResultCheckerService {
         }
         Map.Entry<String, Long> hostAndPortWithMaxLength = lengthPerHostAndPort.entrySet().stream()
                 .max(Comparator.comparing(Map.Entry::getValue)).get();
+        uri = "http://" + hostAndPortWithMaxLength.getKey() + "/copy-blocks";
+        ResponseEntity<List<BlockDto>> blocksToCopyEntity =
+                restTemplate.exchange(uri,
+                        HttpMethod.GET,
+                        null,
+                        new ParameterizedTypeReference<List<BlockDto>>() {
+                        });
 
+        List<BlockDto> blocksToCopy = blocksToCopyEntity.getBody();
+        blockService.reWriteBlocks(blocksToCopy);
     }
+
 }

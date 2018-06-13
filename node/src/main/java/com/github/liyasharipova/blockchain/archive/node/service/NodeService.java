@@ -1,7 +1,7 @@
 package com.github.liyasharipova.blockchain.archive.node.service;
 
 
-import com.github.liyasharipova.blockchain.archive.node.dto.BlockDto;
+import com.github.liyasharipova.blockchain.node.api.dto.response.BlockDto;
 import com.github.liyasharipova.blockchain.node.api.dto.response.SelfCheckResultDto;
 import com.github.liyasharipova.blockchain.archive.node.entity.BlockEntity;
 import com.github.liyasharipova.blockchain.archive.node.repository.BlockRepository;
@@ -9,6 +9,7 @@ import com.github.liyasharipova.blockchain.node.api.dto.request.TransactionDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -35,9 +36,7 @@ public class NodeService {
     }
 
     public SelfCheckResultDto selfCheck(Long blockNumber) {
-        List<BlockEntity> allBlocks = blockRepository.findAll();
-        List<BlockDto> blockDtos = new ArrayList<>();
-        allBlocks.forEach(blockEntity -> blockDtos.add(toDto(blockEntity)));
+        List<BlockDto> blockDtos = blockService.getAllBlockDtos();
         BlockDto currentBlock;
         BlockDto previousBlock;
         String hashTarget = new String(new char[difficulty]).replace('\0', '0');
@@ -60,20 +59,9 @@ public class NodeService {
             }
         }
         checkResultDto.setIsCheckSuccessful(true);
-        checkResultDto.setLength((long) allBlocks.size());
+        checkResultDto.setLength((long) blockDtos.size());
         return checkResultDto;
     }
 
-    public BlockDto toDto(BlockEntity entity) {
-        BlockDto blockDto = new BlockDto();
-        blockDto.setHash(entity.getHash());
-        blockDto.setNonce(entity.getNonce());
-        blockDto.setPreviousHash(entity.getPreviousHash());
-        entity.getTransactions().forEach(trEntity -> {
-            TransactionDto transactionDto = new TransactionDto(trEntity.getId(),
-                    trEntity.getFileHash(), trEntity.getUploadedTime());
-            blockDto.getTransactions().add(transactionDto);
-        });
-        return blockDto;
-    }
+
 }

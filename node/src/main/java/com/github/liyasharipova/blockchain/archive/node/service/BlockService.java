@@ -1,6 +1,7 @@
 package com.github.liyasharipova.blockchain.archive.node.service;
 
-import com.github.liyasharipova.blockchain.archive.node.dto.BlockDto;
+import com.github.liyasharipova.blockchain.node.api.dto.request.TransactionDto;
+import com.github.liyasharipova.blockchain.node.api.dto.response.BlockDto;
 import com.github.liyasharipova.blockchain.archive.node.dto.SuccessfulMinedByOthersBlocks;
 import com.github.liyasharipova.blockchain.archive.node.entity.BlockEntity;
 import com.github.liyasharipova.blockchain.archive.node.entity.TransactionEntity;
@@ -99,7 +100,67 @@ public class BlockService {
         // Если не будет найден блок, то хэш предыдущего = 0
         // Если будет найден, то отдается через BlockEntity::getHash
         return Optional.ofNullable(blockRepository.findFirstByOrderByIdDesc())
-                       .map(BlockEntity::getHash)
-                       .orElse(rootHash);
+                .map(BlockEntity::getHash)
+                .orElse(rootHash);
+    }
+
+    public List<BlockDto> getAllBlockDtos() {
+        List<BlockEntity> allBlocks = blockRepository.findAll();
+        List<BlockDto> blockDtos = new ArrayList<>();
+        allBlocks.forEach(blockEntity -> blockDtos.add(toDto(blockEntity)));
+        return blockDtos;
+    }
+
+
+    /**
+     *
+     * @param blocksToCopy все блоки ноды наибольшей длины
+     */
+    public void reWriteBlocks(List<BlockDto> blocksToCopy) {
+        List<BlockDto> allBlockDtos = getAllBlockDtos();
+        List<Long> idsToReWright = new ArrayList<>();
+        // если появилось неравенство хешей, то все послеующие добавляем в список  на удаление
+        boolean isMistakeApears = false;
+        for (int i = 0; i < allBlockDtos.size() - 1; i++) {
+            if (!blocksToCopy.get(i).getHash().equals(allBlockDtos.get(i).getHash()) || isMistakeApears) {
+                idsToReWright.add(allBlockDtos.get(i).getId());
+                isMistakeApears = true;
+            }
+        }
+        //удаляем все неверные записи из бд
+        blockRepository.deleteBlockWithIds(idsToReWright);
+        //из блоков на копирование убираем все оставшиеся верные записи
+        blocksToCopy.removeAll(getAllBlockDtos());
+        //сохраняем оставшиеся верные записи
+        blocksToCopy.forEach(blockDto -> blockRepository.save(toEntity(blockDto)));
+    }
+
+    public BlockDto toDto(BlockEntity entity) {
+        BlockDto blockDto = new BlockDto();
+        blockDto.setId(entity.getId());
+        blockDto.setHash(entity.getHash());
+        blockDto.setNonce(entity.getNonce());
+        blockDto.setPreviousHash(entity.getPreviousHash());
+        entity.getTransactions().forEach(trEntity -> {
+            TransactionDto transactionDto = new TransactionDto(trEntity.getId(),
+                    trEntity.getFileHash(), trEntity.getUploadedTime());
+            blockDto.getTransactions().add(transactionDto);
+        });
+        return blockDto;
+    }
+
+    public BlockEntity toEntity(BlockDto dto) {
+        BlockEntity blockEntity = new BlockEntity();
+        blockEntity.setId(dto.getId());
+        blockEntity.setHash(dto.getHash());
+        blockEntity.setNonce(dto.getNonce());
+        blockEntity.setPreviousHash(dto.getPreviousHash());
+        dto.getTransactions().forEach(trDto -> {
+            TransactionEntity transactionEntity = new TransactionEntity(trDto.getHash(), trDto.getId(),
+                    blockEntity, trDto.getUploadDateTime());
+            blockEntity.getTransactions().add(transactionEntity);
+        });
+        return blockEntity;
+
     }
 }

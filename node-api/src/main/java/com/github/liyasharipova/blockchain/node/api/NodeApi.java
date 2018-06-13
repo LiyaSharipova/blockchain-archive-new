@@ -1,5 +1,6 @@
 package com.github.liyasharipova.blockchain.node.api;
 
+import com.github.liyasharipova.blockchain.node.api.dto.response.BlockDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -38,5 +39,5 @@ public interface NodeApi {
      */
     @RequestMapping(value = "/copy-blocks",
             method = RequestMethod.GET)
-    ResponseEntity<List<Object>> copyBlocks();
+    ResponseEntity<List<BlockDto>> copyBlocks();
 }

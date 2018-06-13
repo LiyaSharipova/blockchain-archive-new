@@ -14,5 +14,5 @@ public interface BlockRepository extends JpaRepository<BlockEntity, String> {
 
     @Modifying
     @Query("delete from BlockEntity b where b.id in ?1")
-    void deleteUsersWithIds(List<Long> ids);
+    void deleteBlockWithIds(List<Long> ids);
 }
