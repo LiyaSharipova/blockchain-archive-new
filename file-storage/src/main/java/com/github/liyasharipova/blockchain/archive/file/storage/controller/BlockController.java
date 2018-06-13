@@ -1,9 +1,13 @@
 package com.github.liyasharipova.blockchain.archive.file.storage.controller;
 
+import com.github.liyasharipova.blockchain.application.api.dto.request.BlockRequest;
+import com.github.liyasharipova.blockchain.archive.file.storage.service.FileService;
 import com.github.liyasharipova.blockchain.filestorage.api.BlockApi;
-import com.github.liyasharipova.blockchain.filestorage.api.dto.BlockRequest;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+
+import java.util.UUID;
 
 /**
  *
@@ -11,13 +15,16 @@ import org.springframework.stereotype.Controller;
 @Controller
 public class BlockController implements BlockApi{
 
+    @Autowired
+    FileService fileService;
+
     @Override
-    public ResponseEntity<Object> setBlocksPost(BlockRequest blockRequest) {
-        return null;
+    public void setBlocksPost(BlockRequest blockRequest) {
+        fileService.setBlocks(blockRequest);
     }
 
     @Override
-    public ResponseEntity<Object> receiveBlockNumberPost() {
+    public ResponseEntity<UUID> receiveBlockNumberPost() {
         return null;
     }
 }

@@ -1,5 +1,6 @@
 package com.github.liyasharipova.blockchain.archive.file.storage.service;
 
+import com.github.liyasharipova.blockchain.application.api.dto.request.BlockRequest;
 import com.github.liyasharipova.blockchain.archive.file.storage.entity.FileEntity;
 import com.github.liyasharipova.blockchain.archive.file.storage.repository.FileStorageRepository;
 import com.github.liyasharipova.blockchain.filestorage.api.dto.FileDto;
@@ -46,5 +47,13 @@ public class FileService {
     public Resource getFileById(Long id) {
         byte[] data = fileStorageRepository.getFileEntityById(id).getData();
         return new ByteArrayResource(data);
+    }
+
+    public void setBlocks(BlockRequest blockRequest) {
+        blockRequest.getFileIds().forEach(fileId -> {
+            FileEntity fileEntity = fileStorageRepository.findOne(fileId);
+            fileEntity.setBlockNumber(blockRequest.getBlockNumber());
+            fileStorageRepository.save(fileEntity);
+        });
     }
 }

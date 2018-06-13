@@ -1,5 +1,6 @@
 package com.github.liyasharipova.blockchain.archive.application.service;
 
+import com.github.liyasharipova.blockchain.application.api.dto.request.BlockRequest;
 import com.github.liyasharipova.blockchain.filestorage.api.dto.FileDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -73,5 +74,10 @@ public class FileStorageService {
             throw e;
         }
         return fileId;
+    }
+
+    public void sendBlock(BlockRequest blockRequest) {
+        RestTemplate restTemplate = new RestTemplate();
+        restTemplate.postForObject(FILE_STORAGE_URL + "/set-blocks", blockRequest, Void.class);
     }
 }

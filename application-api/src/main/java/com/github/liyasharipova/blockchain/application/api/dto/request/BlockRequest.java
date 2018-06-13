@@ -10,6 +10,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * BlockRequest
@@ -28,7 +29,7 @@ public class BlockRequest {
      **/
     @JsonProperty("block-number")
     @NotNull
-    private Integer blockNumber;
+    private UUID blockNumber;
 
     /**
      * Список идентификаторов файлов в блоке
@@ -38,6 +39,6 @@ public class BlockRequest {
     @JsonProperty("file-ids")
     @NotNull
     @Valid
-    private List<Integer> fileIds = new ArrayList<Integer>();
+    private List<Long> fileIds = new ArrayList<>();
 }
 

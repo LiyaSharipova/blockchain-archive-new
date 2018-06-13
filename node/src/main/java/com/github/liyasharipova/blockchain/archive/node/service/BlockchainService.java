@@ -1,5 +1,7 @@
 package com.github.liyasharipova.blockchain.archive.node.service;
 
+import com.github.liyasharipova.blockchain.application.api.dto.request.BlockRequest;
+import com.github.liyasharipova.blockchain.node.api.dto.request.TransactionDto;
 import com.github.liyasharipova.blockchain.node.api.dto.response.BlockDto;
 import com.github.liyasharipova.blockchain.archive.node.repository.TransactionRepository;
 import com.github.liyasharipova.blockchain.archive.node.util.StringUtil;
@@ -12,8 +14,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import javax.transaction.Transactional;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 /**
  * Сервис для работы с блокчейном
@@ -76,8 +80,18 @@ public class BlockchainService {
             return block;
         }
         sendMininfResultToOtherNodes(block);
+        sendMininfResultToApllication(block);
         log.info("Block mined with hash {} ", block.getHash().substring(0, 6));
         return block;
+    }
+
+    private void sendMininfResultToApllication(BlockDto block) {
+        RestTemplate restTemplate = new RestTemplate();
+        String uri = "http://" + applicationHost + ":" + applicationPort + "//receive-mining-result";
+        BlockRequest blockRequest = new BlockRequest();
+        blockRequest.setBlockNumber(block.getNumber());
+        blockRequest.setFileIds(block.getTransactions().stream().map(TransactionDto::getId).collect(Collectors.toList()));
+        restTemplate.postForObject(uri, blockRequest, Void.class);
     }
 
     private void sendMininfResultToOtherNodes(BlockDto block) {

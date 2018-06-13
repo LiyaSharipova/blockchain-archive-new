@@ -94,6 +94,10 @@
             <groupId>com.github.liyasharipova.blockchain</groupId>
             <artifactId>file-storage-api</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.github.liyasharipova.blockchain</groupId>
+            <artifactId>application-api</artifactId>
+        </dependency>
     </dependencies>
 
     <build>

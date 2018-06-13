@@ -32,5 +32,5 @@ public interface BlockchainApi {
     @RequestMapping(value = "/receive-mining-result",
                     consumes = {"application/json"},
                     method = RequestMethod.POST)
-    ResponseEntity<Object> receiveMiningResult(@Valid @RequestBody BlockRequest blockRequest);
+    void receiveMiningResult(@Valid @RequestBody BlockRequest blockRequest);
 }
