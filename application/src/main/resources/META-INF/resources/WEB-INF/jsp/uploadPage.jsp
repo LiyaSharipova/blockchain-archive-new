@@ -20,15 +20,11 @@
 
     <div>
 
-        <form method="POST" enctype="multipart/form-data" action="/" class="md-form">
-            <div class="file-field">
-                <div class="btn btn-primary btn-sm float-left">
-                    <span>Choose file</span>
-                    <input type="file">
-                </div>
-                <div class="file-path-wrapper">
-                    <input class="file-path validate" type="text" placeholder="Upload your file">
-                </div>
+        <form method="POST" enctype="multipart/form-data" action="/">
+            <div class="form-group">
+                <label for="file">File to upload:</label>
+                <br>
+                <input type="file" class="form-control-file" id="file" required="required" name="file">
             </div>
             <br>
             <button type="submit" class="btn btn-primary">Upload</button>
