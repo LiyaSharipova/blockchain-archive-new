@@ -83,14 +83,15 @@ public class BlockchainService {
     private void sendMininfResultToOtherNodes(BlockDto block) {
         RestTemplate restTemplate = new RestTemplate();
         for (int i = 0; i < nodeHosts.size(); i++) {
-            if (!nodeHosts.get(i).equals(ownHost)) {
+            String nodeHostAndPort = nodeHosts.get(i) + nodePorts.get(i);
+            if (!nodeHostAndPort.equals(ownHost+ownPort)) {
                 String uri = "http://" + nodeHosts.get(i) + ":" + nodePorts.get(i) + "/receive-mined-block-info";
                 NonceCheckRequest nonceCheckRequest = new NonceCheckRequest();
                 nonceCheckRequest.setBlockHash(block.getHash());
                 nonceCheckRequest.setNonce(block.getNonce());
                 nonceCheckRequest.setTransactions(block.getTransactions());
                 restTemplate.postForObject(uri, nonceCheckRequest, NonceCheckResponse.class);
-                log.info("Отправлен mained block info {}:{}", nodeHosts.get(i), nodePorts.get(i));
+                log.info("Отправлен mined block info {}:{}", nodeHosts.get(i), nodePorts.get(i));
             }
         }
     }

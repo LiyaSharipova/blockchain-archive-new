@@ -5,10 +5,12 @@ import com.github.liyasharipova.blockchain.archive.node.service.StopMiningServic
 import com.github.liyasharipova.blockchain.node.api.BlockchainApi;
 import com.github.liyasharipova.blockchain.node.api.dto.request.MiningInfoRequest;
 import com.github.liyasharipova.blockchain.node.api.dto.request.NonceCheckRequest;
-import com.github.liyasharipova.blockchain.node.api.dto.response.NonceCheckResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.validation.Valid;
 
 /**
  *
@@ -27,7 +29,7 @@ public class BlockchainController implements BlockchainApi {
     }
 
     @Override
-    public Boolean receiveMinedBlockInfoPost(NonceCheckRequest nonceCheckRequest) {
+    public Boolean receiveMinedBlockInfoPost(@Valid @RequestBody NonceCheckRequest nonceCheckRequest) {
         Boolean response = miningResultCheckerService.checkMinedBlockInfo(nonceCheckRequest);
         return response;
     }
