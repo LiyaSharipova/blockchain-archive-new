@@ -12,7 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -53,13 +53,40 @@ public class BlockService {
         blockRepository.save(blockEntity);
     }
 
-    //todo может умнее можно
+    /**
+     * Проверка наличия транзакций блока thisBlock среди транзакций из замайненных блоков
+     * {@link SuccessfulMinedByOthersBlocks#getSuccessfulBlocks()}
+     */
     public boolean isThisBlockInSuccessfulBlocks(BlockDto thisBlock) {
-        return SuccessfulMinedByOthersBlocks.getSuccessfulBlocks().stream().anyMatch(eachSuccessBlock -> {
-            List<String> succcessTransactions = eachSuccessBlock.getTransactions().stream().map(TransactionDto::getHash).collect(Collectors.toList());
-            List<String> toCheckTransactions = thisBlock.getTransactions().stream().map(TransactionDto::getHash).collect(Collectors.toList());
-            return succcessTransactions.containsAll(toCheckTransactions);
+        // Список хешей транзакций в виде строк у проверяемого блока
+        ArrayList<String> thisBlockTransactions = new ArrayList<>();
+        // Из проверяемого блока вытаскиваем транзакции и кладем каждую в thisBlockTransactions
+        thisBlock.getTransactions().forEach(transactionDto -> {
+            thisBlockTransactions.add(transactionDto.getHash());
         });
+
+        List<BlockDto> successfulBlocks = SuccessfulMinedByOthersBlocks.getSuccessfulBlocks();
+        for (BlockDto successfulBlock : successfulBlocks) {
+            // Список хешей транзакций в виде строк у каждого замайненного блока
+            ArrayList<String> successfulTransactions = new ArrayList<>();
+
+            // Из каждого замайненного блока вытаскиваем транзакции
+            // и кладем каждую в successfulTransactions
+            successfulBlock.getTransactions().forEach(successfulTransaction->{
+                successfulTransactions.add(successfulTransaction.getHash());
+            });
+
+            // Проверяем совпадение всех хешей
+            if (successfulTransactions.containsAll(thisBlockTransactions)) {
+                // Если совпали, то отдаем успешный ответ,
+                // если нет, то првоеряем другие
+                return true;
+            }
+        }
+
+        // Если не нашлось совпадение, а все списки транзакций были проверены,
+        // то отдаем, что thisBlock не находится в списке замайненных транзакций
+        return false;
     }
 
     public String getLastBlockHash() {
