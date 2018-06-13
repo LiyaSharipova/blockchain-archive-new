@@ -6,7 +6,7 @@
 <body>
 
 <br>
-<H2>Blockchain Atchive</H2>
+<H2>Blockchain Archive</H2>
 <br>
 
 <c:if test="${not empty message}">
@@ -34,7 +34,7 @@
         <c:forEach items="${files}" var="file">
             <li>
                 <c:choose>
-                    <c:when test="${empty file.number}">
+                    <c:when test="${empty file.blockNumber}">
                         <c:out value="${file.name} is waiting for being saved in Blockchain"/>
                     </c:when>
                     <c:otherwise>

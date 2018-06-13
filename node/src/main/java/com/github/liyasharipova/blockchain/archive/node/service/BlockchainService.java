@@ -56,7 +56,7 @@ public class BlockchainService {
 
     public void mineBlockAndPlaceToBlockchain(BlockDto block) {
         mineBlock(block);
-        blockService.saveBlock(block);
+        blockService.saveBlockIfNotExist(block);
     }
 
 
@@ -75,6 +75,10 @@ public class BlockchainService {
             block.setNonce(random.nextLong());
             block.setHash(blockService.calculateHash(block));
         }
+        // Если блок оказался среди замайненных блоков, то удаляем его из очереди
+        if (blockService.isThisBlockInSuccessfulBlocks(block)) {
+            return block;
+        }
         sendMininfResultToOtherNodes(block);
         log.info("Block mined with hash {} ", block.getHash().substring(0, 6));
         return block;
@@ -90,7 +94,7 @@ public class BlockchainService {
                 nonceCheckRequest.setBlockHash(block.getHash());
                 nonceCheckRequest.setNonce(block.getNonce());
                 nonceCheckRequest.setTransactions(block.getTransactions());
-                restTemplate.postForObject(uri, nonceCheckRequest, NonceCheckResponse.class);
+                restTemplate.postForObject(uri, nonceCheckRequest, Boolean  .class);
                 log.info("Отправлен mined block info {}:{}", nodeHosts.get(i), nodePorts.get(i));
             }
         }

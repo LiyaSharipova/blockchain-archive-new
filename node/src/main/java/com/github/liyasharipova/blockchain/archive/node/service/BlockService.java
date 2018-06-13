@@ -102,4 +102,24 @@ public class BlockService {
                        .map(BlockEntity::getHash)
                        .orElse(rootHash);
     }
+
+    public synchronized void saveBlockIfNotExist(BlockDto blockToAdd) {
+        for (BlockEntity blockEntity : blockRepository.findAll()) {
+            ArrayList<String> existingTransactions = new ArrayList<>();
+            blockEntity.getTransactions().forEach(transactionEntity -> {
+                existingTransactions.add(transactionEntity.getFileHash());
+            });
+
+            ArrayList<String> toAddTransactions = new ArrayList<>();
+
+            blockToAdd.getTransactions().forEach(transactionDto -> {
+                toAddTransactions.add(transactionDto.getHash());
+            });
+
+            if (toAddTransactions.containsAll(existingTransactions)) {
+                return;
+            }
+        }
+        saveBlock(blockToAdd);
+    }
 }

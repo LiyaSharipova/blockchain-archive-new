@@ -1,7 +1,6 @@
 package com.github.liyasharipova.blockchain.archive.node.controller;
 
 import com.github.liyasharipova.blockchain.archive.node.service.MiningResultCheckerService;
-import com.github.liyasharipova.blockchain.archive.node.service.StopMiningService;
 import com.github.liyasharipova.blockchain.node.api.BlockchainApi;
 import com.github.liyasharipova.blockchain.node.api.dto.request.MiningInfoRequest;
 import com.github.liyasharipova.blockchain.node.api.dto.request.NonceCheckRequest;
@@ -17,8 +16,6 @@ import javax.validation.Valid;
  */
 @RestController
 public class BlockchainController implements BlockchainApi {
-
-    private final StopMiningService stopMiningService = new StopMiningService();
 
     private MiningResultCheckerService miningResultCheckerService;
 

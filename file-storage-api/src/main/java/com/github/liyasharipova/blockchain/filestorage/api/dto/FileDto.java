@@ -31,7 +31,4 @@ public class FileDto {
         this.data = data;
     }
 
-    public UUID getBlockNumber() {
-        return blockNumber;
-    }
 }

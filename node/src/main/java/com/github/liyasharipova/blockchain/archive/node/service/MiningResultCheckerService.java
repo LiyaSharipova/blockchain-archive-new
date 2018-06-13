@@ -2,10 +2,10 @@ package com.github.liyasharipova.blockchain.archive.node.service;
 
 import com.github.liyasharipova.blockchain.archive.node.dto.BlockDto;
 import com.github.liyasharipova.blockchain.archive.node.dto.BlocksQueue;
-import com.github.liyasharipova.blockchain.node.api.dto.response.SelfCheckResultDto;
+import com.github.liyasharipova.blockchain.archive.node.dto.SuccessfulMinedByOthersBlocks;
 import com.github.liyasharipova.blockchain.archive.node.util.StringUtil;
 import com.github.liyasharipova.blockchain.node.api.dto.request.NonceCheckRequest;
-import com.github.liyasharipova.blockchain.node.api.dto.response.NonceCheckResponse;
+import com.github.liyasharipova.blockchain.node.api.dto.response.SelfCheckResultDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,7 +13,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import javax.transaction.Transactional;
-import java.util.*;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -24,8 +27,8 @@ import java.util.*;
 public class MiningResultCheckerService {
 
     private BlockService blockService;
+
     private NodeService nodeService;
-    private BlockchainService blockchainService;
 
     @Value("#{'${node.hosts}'.split(',')}")
     private List<String> nodeHosts;
@@ -40,14 +43,10 @@ public class MiningResultCheckerService {
     private String ownHost;
 
     @Autowired
-    private StopMiningService stopMiningService;
-
-    @Autowired
     public MiningResultCheckerService(
-            BlockService blockService, NodeService nodeService, BlockchainService blockchainService) {
+            BlockService blockService, NodeService nodeService) {
         this.blockService = blockService;
         this.nodeService = nodeService;
-        this.blockchainService = blockchainService;
     }
 
     public Boolean checkMinedBlockInfo(NonceCheckRequest nonceCheckRequest) {
@@ -66,10 +65,8 @@ public class MiningResultCheckerService {
             }
         } else {
             //А если все нормально, остановить майнинг и добавить в блокчейн замайненный блок
-//            todo остановить майнинг
-//            todo удалить блок из очереди на майнинг
-            blockService.saveBlock(checkBlock);
-            stopMiningService.stopMining(checkBlock);
+            SuccessfulMinedByOthersBlocks.getSuccessfulBlocks().add(checkBlock);
+            blockService.saveBlockIfNotExist(checkBlock);
             return true;
         }
 
@@ -112,7 +109,8 @@ public class MiningResultCheckerService {
             }
         }
         Map.Entry<String, Long> hostAndPortWithMaxLength = lengthPerHostAndPort.entrySet().stream()
-                .max(Comparator.comparing(Map.Entry::getValue)).get();
+                                                                               .max(Comparator.comparing(
+                                                                                       Map.Entry::getValue)).get();
 
     }
 }

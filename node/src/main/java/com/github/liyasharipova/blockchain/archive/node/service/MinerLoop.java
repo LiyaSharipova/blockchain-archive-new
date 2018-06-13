@@ -43,7 +43,7 @@ public class MinerLoop implements CommandLineRunner {
             // Информация об этом должна к нам прийти
             BlockDto block = null;
 
-            while (blocksQueue!=null && blocksQueue.size() != 0
+            while (blocksQueue != null && blocksQueue.size() != 0
                     && !blockService.isThisBlockInSuccessfulBlocks(blocksQueue.peek())
                     ) {
                 blockchainService.mineBlockAndPlaceToBlockchain(blocksQueue.peek());
@@ -52,6 +52,11 @@ public class MinerLoop implements CommandLineRunner {
                 // todo но это нужно делать не здесь,  чтобы майнинг продолжался
                 blocksQueue.remove();
                 log.info("Замайнен блок: {}", block.getTransactions());
+            }
+            // Если следующий блок оказался среди замайненных блоков, то удаляем его из очереди
+            if (blocksQueue != null && blocksQueue.size() != 0
+                    && blockService.isThisBlockInSuccessfulBlocks(blocksQueue.peek())) {
+                blocksQueue.remove();
             }
             Thread.sleep(blockQueueCheckPeriod * 1000);
         }
