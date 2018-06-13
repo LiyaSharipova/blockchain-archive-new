@@ -6,6 +6,8 @@ import com.github.liyasharipova.blockchain.archive.node.dto.NonceRangeDto;
 import com.github.liyasharipova.blockchain.archive.node.repository.BlockRepository;
 import com.github.liyasharipova.blockchain.archive.node.repository.TransactionRepository;
 import com.github.liyasharipova.blockchain.archive.node.util.StringUtil;
+import com.github.liyasharipova.blockchain.node.api.dto.request.NonceCheckRequest;
+import com.github.liyasharipova.blockchain.node.api.dto.response.NonceCheckResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -28,11 +30,17 @@ public class BlockchainService {
     @Value("${difficulty}")
     private int difficulty;
 
-    //todo убрать, так как хранилище только одно -- БД
-    private List<BlockDto> blockchain = new ArrayList<>();
+    @Value("#{'${node.hosts}'.split(',')}")
+    private List<String> nodeHosts;
 
-    @Autowired
-    private BlockRepository blockRepository;
+    @Value("#{'${node.ports}'.split(',')}")
+    private List<String> nodePorts;
+
+    @Value("${server.port}")
+    private String ownPort;
+
+    @Value("${server.address}")
+    private String ownHost;
 
     @Autowired
     private TransactionRepository transactionRepository;
@@ -47,59 +55,44 @@ public class BlockchainService {
     private BlockService blockService;
 
     public void mineBlockAndPlaceToBlockchain(BlockDto block) {
-
-        RestTemplate restTemplate = new RestTemplate();
-//        String url = "http://" + applicationHost + ":" + applicationPort + "/nonces";
-//        NonceRequest request = new NonceRequest(block.getUuid());
-//        NonceRangeDto nonceRange = restTemplate.postForObject(url, request, NonceRangeDto.class);
         mineBlock(block);
-        blockchain.add(block);
+        blockService.saveBlock(block);
     }
 
-    //    /**
-    //     * todo Нужно замайнить блок, потом положить его в блокчейн
-    //     *
-    //     * @param block
-    //     */
-    //    private void mineBlock(FutureBlock block) {
-    //    }
 
     /**
      * Увеличиваем значение nonce пока нужный хэш не будет найден
      */
-    public void mineBlock(BlockDto block) {
+    public BlockDto mineBlock(BlockDto block) {
         Random random = new Random();
-        block.setPreviousHash(getLastBlockHash());
-//        block.setNonce(nonceRange.getBeginNonce());
+        block.setPreviousHash(blockService.getLastBlockHash());
         block.setMerkleRoot(StringUtil.getMerkleRoot(block.getTransactions()));
         block.setHash(blockService.calculateHash(block));
         String target = StringUtil.getDificultyString(difficulty); //Create a string with difficulty * "0"
 
-        while (!block.getHash().substring(0, difficulty).equals(target)&&
+        while (!block.getHash().substring(0, difficulty).equals(target) &&
                 (!blockService.isThisBlockInSuccessfulBlocks(block))) {
-//            block.increaseNonce();
             block.setNonce(random.nextLong());
             block.setHash(blockService.calculateHash(block));
-
         }
-
-        //todo если майнинг будет неуспешным, то нужно  будет запросить вновь NonceRangeDto
+        sendMininfResultToOtherNodes(block);
         log.info("Block mined with hash {} ", block.getHash().substring(0, 6));
+        return block;
     }
 
-    public String getLastBlockHash() {
-        if (blockchain.size() == 0) {
-            return "0";
+    private void sendMininfResultToOtherNodes(BlockDto block) {
+        RestTemplate restTemplate = new RestTemplate();
+        for (int i = 0; i < nodeHosts.size(); i++) {
+            if (!nodeHosts.get(i).equals(ownHost)) {
+                String uri = "http://" + nodeHosts.get(i) + ":" + nodePorts.get(i) + "/receive-mined-block-info";
+                NonceCheckRequest nonceCheckRequest = new NonceCheckRequest();
+                nonceCheckRequest.setBlockHash(block.getHash());
+                nonceCheckRequest.setNonce(block.getNonce());
+                nonceCheckRequest.setTransactions(block.getTransactions());
+                restTemplate.postForObject(uri, nonceCheckRequest, NonceCheckResponse.class);
+                log.info("Отправлен mained block info {}:{}", nodeHosts.get(i), nodePorts.get(i));
+            }
         }
-        return blockchain.get(blockchain.size() - 1).getHash();
     }
-
-    public void addToBlockChain(BlockDto blockDto) {
-        blockchain.add(blockDto);
-    }
-    public Long getLastBlockNumber(){
-        return Long.valueOf(blockchain.size());
-    }
-
 
 }

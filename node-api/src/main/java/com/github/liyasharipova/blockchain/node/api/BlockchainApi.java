@@ -21,7 +21,7 @@ public interface BlockchainApi {
     @RequestMapping(value = "/receive-mined-block-info",
                     consumes = {"application/json"},
                     method = RequestMethod.POST)
-    ResponseEntity<NonceCheckResponse> receiveMinedBlockInfoPost(@Valid @RequestBody NonceCheckRequest nonceCheckRequest);
+    Boolean receiveMinedBlockInfoPost(@Valid @RequestBody NonceCheckRequest nonceCheckRequest);
 
     /**
      * Получение ошибки проверки полученного nonce от ноды, которая первая смогла вычислить хеш заданной сложности, для дальнейшего запуска self-check. Метод будет альтернативой синхронного ответа вместо отправки response c /receive-mined-block-info

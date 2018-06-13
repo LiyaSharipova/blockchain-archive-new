@@ -50,7 +50,7 @@ public class MiningResultCheckerService {
         this.blockchainService = blockchainService;
     }
 
-    public NonceCheckResponse checkMinedBlockInfo(NonceCheckRequest nonceCheckRequest) {
+    public Boolean checkMinedBlockInfo(NonceCheckRequest nonceCheckRequest) {
 
         BlockDto checkBlock = createCheckBlock(nonceCheckRequest);
         String calculatedHash = blockService.calculateHash(checkBlock);
@@ -69,10 +69,8 @@ public class MiningResultCheckerService {
 //            todo остановить майнинг
 //            todo удалить блок из очереди на майнинг
             blockService.saveBlock(checkBlock);
-            //todo убрать, так как хранилище только одно -- БД
-            blockchainService.addToBlockChain(checkBlock);
             stopMiningService.stopMining(checkBlock);
-            return new NonceCheckResponse(true, blockchainService.getLastBlockNumber());
+            return true;
         }
 
         //todo проверить, что транзакции те же самые -- но зачем, пока не ясно
@@ -82,7 +80,7 @@ public class MiningResultCheckerService {
     private BlockDto createCheckBlock(NonceCheckRequest nonceCheckRequest) {
         BlockDto lastBlock = BlocksQueue.getBlocksQueue().peek();
         BlockDto checkBlock = new BlockDto();
-        checkBlock.setPreviousHash(blockchainService.getLastBlockHash());
+        checkBlock.setPreviousHash(blockService.getLastBlockHash());
         checkBlock.setTransactions(lastBlock.getTransactions());
         checkBlock.setMerkleRoot(StringUtil.getMerkleRoot(checkBlock.getTransactions()));
         checkBlock.setNonce(nonceCheckRequest.getNonce());

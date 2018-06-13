@@ -29,7 +29,7 @@ public class NonceCheckRequest {
 
     @JsonProperty("transactions")
     @Valid
-    private List<String> transactions;
+    private List<TransactionDto> transactions;
 
 }
 

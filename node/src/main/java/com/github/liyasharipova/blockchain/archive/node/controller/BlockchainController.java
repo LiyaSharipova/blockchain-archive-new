@@ -27,9 +27,9 @@ public class BlockchainController implements BlockchainApi {
     }
 
     @Override
-    public ResponseEntity<NonceCheckResponse> receiveMinedBlockInfoPost(NonceCheckRequest nonceCheckRequest) {
+    public Boolean receiveMinedBlockInfoPost(NonceCheckRequest nonceCheckRequest) {
         NonceCheckResponse response = miningResultCheckerService.checkMinedBlockInfo(nonceCheckRequest);
-        return ResponseEntity.ok(response);
+        return false;
     }
 
     @Override

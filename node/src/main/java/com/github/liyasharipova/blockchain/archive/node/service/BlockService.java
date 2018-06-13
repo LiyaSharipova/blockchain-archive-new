@@ -13,6 +13,8 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.LinkedList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Сервис для работы с блоком
@@ -51,14 +53,16 @@ public class BlockService {
         blockRepository.save(blockEntity);
     }
 
-    //todo
+    //todo может умнее можно
     public boolean isThisBlockInSuccessfulBlocks(BlockDto thisBlock) {
         return SuccessfulMinedByOthersBlocks.getSuccessfulBlocks().stream().anyMatch(eachSuccessBlock -> {
-            LinkedList<TransactionDto>
-                    successTransactions = eachSuccessBlock.getTransactions();
-            LinkedList<TransactionDto> toCheckTransactions = thisBlock.getTransactions();
-            return true;
+            List<String> succcessTransactions = eachSuccessBlock.getTransactions().stream().map(TransactionDto::getHash).collect(Collectors.toList());
+            List<String> toCheckTransactions = thisBlock.getTransactions().stream().map(TransactionDto::getHash).collect(Collectors.toList());
+            return succcessTransactions.containsAll(toCheckTransactions);
         });
     }
 
+    public String getLastBlockHash() {
+        return blockRepository.findFirstByOrderByIdDesc().getHash();
+    }
 }
