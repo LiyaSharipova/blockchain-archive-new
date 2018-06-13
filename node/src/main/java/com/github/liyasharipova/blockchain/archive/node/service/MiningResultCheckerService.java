@@ -40,6 +40,9 @@ public class MiningResultCheckerService {
     private String ownHost;
 
     @Autowired
+    private StopMiningService stopMiningService;
+
+    @Autowired
     public MiningResultCheckerService(
             BlockService blockService, NodeService nodeService, BlockchainService blockchainService) {
         this.blockService = blockService;
@@ -66,7 +69,9 @@ public class MiningResultCheckerService {
 //            todo остановить майнинг
 //            todo удалить блок из очереди на майнинг
             blockService.saveBlock(checkBlock);
+            //todo убрать, так как хранилище только одно -- БД
             blockchainService.addToBlockChain(checkBlock);
+            stopMiningService.stopMining(checkBlock);
             return new NonceCheckResponse(true, blockchainService.getLastBlockNumber());
         }
 

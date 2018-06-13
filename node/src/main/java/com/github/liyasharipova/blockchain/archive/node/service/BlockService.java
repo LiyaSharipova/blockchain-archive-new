@@ -1,15 +1,18 @@
 package com.github.liyasharipova.blockchain.archive.node.service;
 
 import com.github.liyasharipova.blockchain.archive.node.dto.BlockDto;
+import com.github.liyasharipova.blockchain.archive.node.dto.SuccessfulMinedByOthersBlocks;
 import com.github.liyasharipova.blockchain.archive.node.entity.BlockEntity;
 import com.github.liyasharipova.blockchain.archive.node.entity.TransactionEntity;
 import com.github.liyasharipova.blockchain.archive.node.repository.BlockRepository;
 import com.github.liyasharipova.blockchain.archive.node.util.StringUtil;
+import com.github.liyasharipova.blockchain.node.api.dto.request.TransactionDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.LinkedList;
 
 /**
  * Сервис для работы с блоком
@@ -46,6 +49,16 @@ public class BlockService {
             blockEntity.getTransactions().add(transactionEntity);
         });
         blockRepository.save(blockEntity);
+    }
+
+    //todo
+    public boolean isThisBlockInSuccessfulBlocks(BlockDto thisBlock) {
+        return SuccessfulMinedByOthersBlocks.getSuccessfulBlocks().stream().anyMatch(eachSuccessBlock -> {
+            LinkedList<TransactionDto>
+                    successTransactions = eachSuccessBlock.getTransactions();
+            LinkedList<TransactionDto> toCheckTransactions = thisBlock.getTransactions();
+            return true;
+        });
     }
 
 }

@@ -10,8 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-
 /**
  *
  */
@@ -28,7 +26,6 @@ public class BlockchainController implements BlockchainApi {
         this.miningResultCheckerService = miningResultCheckerService;
     }
 
-
     @Override
     public ResponseEntity<NonceCheckResponse> receiveMinedBlockInfoPost(NonceCheckRequest nonceCheckRequest) {
         NonceCheckResponse response = miningResultCheckerService.checkMinedBlockInfo(nonceCheckRequest);
@@ -41,7 +38,8 @@ public class BlockchainController implements BlockchainApi {
     }
 
     @Override
+    @Deprecated
     public ResponseEntity<Object> stopMining(MiningInfoRequest miningInfoRequest) {
-        return ResponseEntity.ok(stopMiningService.stopMining(miningInfoRequest));
+        return null;
     }
 }

@@ -28,6 +28,7 @@ public class BlockchainService {
     @Value("${difficulty}")
     private int difficulty;
 
+    //todo убрать, так как хранилище только одно -- БД
     private List<BlockDto> blockchain = new ArrayList<>();
 
     @Autowired
@@ -74,7 +75,8 @@ public class BlockchainService {
         block.setHash(blockService.calculateHash(block));
         String target = StringUtil.getDificultyString(difficulty); //Create a string with difficulty * "0"
 
-        while (!block.getHash().substring(0, difficulty).equals(target)) {
+        while (!block.getHash().substring(0, difficulty).equals(target)&&
+                (!blockService.isThisBlockInSuccessfulBlocks(block))) {
 //            block.increaseNonce();
             block.setNonce(random.nextLong());
             block.setHash(blockService.calculateHash(block));
