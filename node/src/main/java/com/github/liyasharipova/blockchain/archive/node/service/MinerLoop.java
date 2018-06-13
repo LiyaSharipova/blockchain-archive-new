@@ -1,6 +1,6 @@
 package com.github.liyasharipova.blockchain.archive.node.service;
 
-import com.github.liyasharipova.blockchain.archive.node.dto.BlockDto;
+import com.github.liyasharipova.blockchain.node.api.dto.response.BlockDto;
 import com.github.liyasharipova.blockchain.archive.node.dto.BlocksQueue;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

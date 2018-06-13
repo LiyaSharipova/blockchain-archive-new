@@ -1,4 +1,4 @@
-package com.github.liyasharipova.blockchain.archive.node.dto;
+package com.github.liyasharipova.blockchain.node.api.dto.response;
 
 import com.github.liyasharipova.blockchain.node.api.dto.request.TransactionDto;
 import lombok.Data;
@@ -10,6 +10,8 @@ import java.util.UUID;
 @Data
 @Slf4j
 public class BlockDto {
+
+    private Long id;
 
     private UUID number;
 

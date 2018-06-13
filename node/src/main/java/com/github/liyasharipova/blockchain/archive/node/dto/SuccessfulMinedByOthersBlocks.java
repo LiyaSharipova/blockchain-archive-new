@@ -1,5 +1,7 @@
 package com.github.liyasharipova.blockchain.archive.node.dto;
 
+import com.github.liyasharipova.blockchain.node.api.dto.response.BlockDto;
+
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 

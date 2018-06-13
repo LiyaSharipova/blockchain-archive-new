@@ -1,9 +1,6 @@
 package com.github.liyasharipova.blockchain.archive.node.service;
 
-import com.github.liyasharipova.blockchain.application.api.dto.request.NonceRequest;
-import com.github.liyasharipova.blockchain.archive.node.dto.BlockDto;
-import com.github.liyasharipova.blockchain.archive.node.dto.NonceRangeDto;
-import com.github.liyasharipova.blockchain.archive.node.repository.BlockRepository;
+import com.github.liyasharipova.blockchain.node.api.dto.response.BlockDto;
 import com.github.liyasharipova.blockchain.archive.node.repository.TransactionRepository;
 import com.github.liyasharipova.blockchain.archive.node.util.StringUtil;
 import com.github.liyasharipova.blockchain.node.api.dto.request.NonceCheckRequest;
@@ -15,7 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
