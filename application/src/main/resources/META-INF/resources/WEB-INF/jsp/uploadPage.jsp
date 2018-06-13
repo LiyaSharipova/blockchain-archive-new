@@ -5,6 +5,10 @@
 <html>
 <body>
 
+<br>
+<H2>Blockchain Atchive</H2>
+<br>
+
 <c:if test="${not empty message}">
     <c:out value="${message}"/>
 </c:if>
@@ -14,7 +18,7 @@
         <table>
             <tr>
                 <td>File to upload:</td>
-                <td><input type="file" name="file"/></td>
+                <td><input type="file" name="file" required="required"/></td>
             </tr>
             <tr>
                 <td></td>
@@ -29,7 +33,14 @@
     <ul>
         <c:forEach items="${files}" var="file">
             <li>
-                <a href="/files/${file.id}">${file.name}</a>
+                <c:choose>
+                    <c:when test="${empty file.number}">
+                        <c:out value="${file.name} is waiting for being saved in Blockchain"/>
+                    </c:when>
+                    <c:otherwise>
+                        <a href="/files/${file.id}">${file.name}</a>
+                    </c:otherwise>
+                </c:choose>
             </li>
         </c:forEach>
     </ul>

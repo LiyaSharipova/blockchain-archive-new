@@ -10,6 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.util.List;
+import java.util.UUID;
 
 /**
  *
@@ -37,9 +38,13 @@ public class BlockEntity {
     @OneToMany(mappedBy = "blockEntity")
     private List<TransactionEntity> transactions;
 
-    public BlockEntity(String hash, Long nonce, String previousHash) {
+    @Column(name = "number")
+    private UUID number;
+
+    public BlockEntity(String hash, Long nonce, String previousHash, UUID number) {
         this.hash = hash;
         this.nonce = nonce;
         this.previousHash = previousHash;
+        this.number = number;
     }
 }

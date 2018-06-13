@@ -37,7 +37,6 @@ public class FileController implements FileApi {
     private static final ExecutorService executorService = Executors.newCachedThreadPool();
 
 
-
     @Autowired
     public FileController(
             FileStorageService fileStorageService,
@@ -74,11 +73,6 @@ public class FileController implements FileApi {
 
     /**
      * Заглушка, так как на uploadFile.jsp урл всегда /
-     * todo поместить сообщение о загрузке файла на страницу
-     * todo выводить рядом с файлом статус загрузки в блокчейн - есть ли номер(хеш) блока
-     * в файл сторидже
-     * todo в зависимости от статуса убирать ссылку на скачивание, если файла еще нет в бч
-     * todo проверить, что что-то отправили и вывести соответствующее сообщение
      */
     @PostMapping(value = "/",
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -95,6 +89,10 @@ public class FileController implements FileApi {
     public String uploadFile(@RequestParam("file") MultipartFile file,
                              RedirectAttributes redirectAttributes) throws IOException {
 
+        if (file == null) {
+            redirectAttributes.addFlashAttribute("message", "File is not uploaded");
+            return "redirect:/";
+        }
         uploadFileProcessing(file, redirectAttributes);
 
         return "redirect:/";
