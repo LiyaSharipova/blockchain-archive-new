@@ -37,5 +37,9 @@
             <artifactId>lombok</artifactId>
             <optional>true</optional>
         </dependency>
+        <dependency>
+            <groupId>com.github.liyasharipova.blockchain</groupId>
+            <artifactId>application-api</artifactId>
+        </dependency>
     </dependencies>
 </project>
