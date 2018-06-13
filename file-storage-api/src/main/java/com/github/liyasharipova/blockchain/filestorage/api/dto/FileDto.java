@@ -31,4 +31,10 @@ public class FileDto {
         this.data = data;
     }
 
+    public FileDto(String name, String hash, byte[] data, UUID blockNumber) {
+        this.name = name;
+        this.hash = hash;
+        this.data = data;
+        this.blockNumber = blockNumber;
+    }
 }

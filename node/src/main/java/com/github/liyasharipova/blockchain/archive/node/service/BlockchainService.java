@@ -6,7 +6,6 @@ import com.github.liyasharipova.blockchain.node.api.dto.response.BlockDto;
 import com.github.liyasharipova.blockchain.archive.node.repository.TransactionRepository;
 import com.github.liyasharipova.blockchain.archive.node.util.StringUtil;
 import com.github.liyasharipova.blockchain.node.api.dto.request.NonceCheckRequest;
-import com.github.liyasharipova.blockchain.node.api.dto.response.NonceCheckResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,7 +13,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import javax.transaction.Transactional;
-import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
@@ -80,14 +78,14 @@ public class BlockchainService {
             return block;
         }
         sendMininfResultToOtherNodes(block);
-        sendMininfResultToApllication(block);
+        sendMiningResultToApplication(block);
         log.info("Block mined with hash {} ", block.getHash().substring(0, 6));
         return block;
     }
 
-    private void sendMininfResultToApllication(BlockDto block) {
+    private void sendMiningResultToApplication(BlockDto block) {
         RestTemplate restTemplate = new RestTemplate();
-        String uri = "http://" + applicationHost + ":" + applicationPort + "//receive-mining-result";
+        String uri = "http://" + applicationHost + ":" + applicationPort + "/receive-mining-result";
         BlockRequest blockRequest = new BlockRequest();
         blockRequest.setBlockNumber(block.getNumber());
         blockRequest.setFileIds(block.getTransactions().stream().map(TransactionDto::getId).collect(Collectors.toList()));

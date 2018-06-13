@@ -177,6 +177,7 @@ public class BlockService {
                 toAddTransactions.add(transactionDto.getHash());
             });
 
+            //todo на далекое будущее -- убрать коллизию всех цепочек за раз
             if (toAddTransactions.containsAll(existingTransactions)) {
                 return;
             }

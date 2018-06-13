@@ -6,6 +6,7 @@ import com.github.liyasharipova.blockchain.application.api.dto.request.Blockchai
 import com.github.liyasharipova.blockchain.archive.application.service.FileStorageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
@@ -20,12 +21,12 @@ public class BlockchainController implements BlockchainApi {
     FileStorageService fileStorageService;
 
     @Override
-    public ResponseEntity<Object> selfCheckResultPost(@Valid BlockchainRequest blockchainRequest) {
+    public ResponseEntity<Object> selfCheckResultPost(@Valid @RequestBody  BlockchainRequest blockchainRequest) {
         return null;
     }
 
     @Override
-    public void receiveMiningResult(@Valid BlockRequest blockRequest) {
+    public void receiveMiningResult(@Valid @RequestBody BlockRequest blockRequest) {
         fileStorageService.sendBlock(blockRequest);
     }
 }

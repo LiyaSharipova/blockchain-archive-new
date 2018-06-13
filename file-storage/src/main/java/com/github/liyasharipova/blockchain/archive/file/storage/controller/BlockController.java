@@ -6,20 +6,22 @@ import com.github.liyasharipova.blockchain.filestorage.api.BlockApi;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 
+import javax.validation.Valid;
 import java.util.UUID;
 
 /**
  *
  */
 @Controller
-public class BlockController implements BlockApi{
+public class BlockController implements BlockApi {
 
     @Autowired
     FileService fileService;
 
     @Override
-    public void setBlocksPost(BlockRequest blockRequest) {
+    public void setBlocksPost(@Valid @RequestBody BlockRequest blockRequest) {
         fileService.setBlocks(blockRequest);
     }
 

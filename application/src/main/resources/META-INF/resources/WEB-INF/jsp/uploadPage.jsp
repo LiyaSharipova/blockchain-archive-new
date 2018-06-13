@@ -15,9 +15,10 @@
     <br>
 
     <c:if test="${not empty message}">
-        <c:out value="${message}"/>
+        <div class="alert alert-success">
+            <c:out value="${message}"/>
+        </div>
     </c:if>
-
     <div>
 
         <form method="POST" enctype="multipart/form-data" action="/">
