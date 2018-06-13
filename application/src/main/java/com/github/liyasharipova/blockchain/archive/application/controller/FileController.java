@@ -13,12 +13,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -41,6 +36,8 @@ public class FileController implements FileApi {
 
     private static final ExecutorService executorService = Executors.newCachedThreadPool();
 
+
+
     @Autowired
     public FileController(
             FileStorageService fileStorageService,
@@ -51,9 +48,11 @@ public class FileController implements FileApi {
         this.hashingService = hashingService;
     }
 
+
     @GetMapping("/")
-    public String listUploadedFiles(Model model) {
+    public String listUploadedFiles(Model model, @ModelAttribute("message") String message) {
         model.addAttribute("files", fileStorageService.getAllFiles());
+        model.addAttribute("message", message);
         return "uploadPage";
     }
 
@@ -68,9 +67,9 @@ public class FileController implements FileApi {
     public ResponseEntity<Resource> getFile(@NotBlank @PathVariable("file-id") Long fileId) throws IOException {
         Resource file = fileStorageService.getFile(fileId);
         return ResponseEntity.ok()
-                             .contentLength(file.contentLength())
-                             .contentType(MediaType.APPLICATION_OCTET_STREAM)
-                             .body(file);
+                .contentLength(file.contentLength())
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .body(file);
     }
 
     /**
@@ -82,9 +81,9 @@ public class FileController implements FileApi {
      * todo проверить, что что-то отправили и вывести соответствующее сообщение
      */
     @PostMapping(value = "/",
-                 consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+            consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public String uploadFileFromRoot(@RequestParam("file") MultipartFile file,
-                                     RedirectAttributes redirectAttributes) throws IOException {
+                                     RedirectAttributes redirectAttributes, Model model) throws IOException {
 
         uploadFileProcessing(file, redirectAttributes);
 
@@ -92,7 +91,7 @@ public class FileController implements FileApi {
     }
 
     @PostMapping(value = "/upload-file",
-                 consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+            consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public String uploadFile(@RequestParam("file") MultipartFile file,
                              RedirectAttributes redirectAttributes) throws IOException {
 
@@ -120,8 +119,8 @@ public class FileController implements FileApi {
 
         log.info("Файл и хэш были отправлены в хранилище и нодам: {}");
 
-        redirectAttributes.addAttribute("message",
-                                        "Вы успешно загрузили файл с именем " + file.getOriginalFilename());
+        redirectAttributes.addFlashAttribute("message",
+                "Вы успешно загрузили файл с именем " + file.getOriginalFilename());
     }
 
     @ExceptionHandler(StorageFileNotFoundException.class)

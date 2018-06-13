@@ -5,7 +5,7 @@
 <html>
 <body>
 
-<c:if test="${empty message}">
+<c:if test="${not empty message}">
     <c:out value="${message}"/>
 </c:if>
 
