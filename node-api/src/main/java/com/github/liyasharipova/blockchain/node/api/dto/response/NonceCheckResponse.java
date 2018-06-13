@@ -26,9 +26,9 @@ public class NonceCheckResponse {
     /**
      * Номер блока, для которого пришедший nonce был верен или не верен
      *
-     * @return blockNumber
+     * @return number
      **/
-    @JsonProperty("blockNumber")
+    @JsonProperty("number")
     private Long blockNumber;
 }
 

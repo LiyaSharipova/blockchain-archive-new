@@ -10,6 +10,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.util.UUID;
 
 @Entity
 @Table(name = "file", schema = "public")
@@ -34,9 +35,14 @@ public class FileEntity {
     @Column(name = "data")
     private byte[] data;
 
-    public FileEntity(String name, String hash, byte[] data) {
+    @Basic
+    @Column(name = "block_number")
+    private UUID blockNumber;
+
+    public FileEntity(String name, String hash, byte[] data, UUID blockNumber) {
         this.name = name;
         this.hash = hash;
         this.data = data;
+        this.blockNumber = blockNumber;
     }
 }

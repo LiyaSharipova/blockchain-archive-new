@@ -24,7 +24,7 @@ public class BlockRequest {
     /**
      * Номер блока
      *
-     * @return blockNumber
+     * @return number
      **/
     @JsonProperty("block-number")
     @NotNull

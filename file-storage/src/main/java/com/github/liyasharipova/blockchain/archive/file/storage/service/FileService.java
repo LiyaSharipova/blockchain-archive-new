@@ -38,7 +38,7 @@ public class FileService {
 
     public Long saveFile(FileDto fileDto) {
         FileEntity entity = null;
-        FileEntity fileEntity = new FileEntity(fileDto.getName(), fileDto.getHash(), fileDto.getData());
+        FileEntity fileEntity = new FileEntity(fileDto.getName(), fileDto.getHash(), fileDto.getData(), fileDto.getBlockNumber());
         entity = fileStorageRepository.save(fileEntity);
         return entity.getId();
     }

@@ -11,8 +11,7 @@ import java.util.UUID;
 @Slf4j
 public class BlockDto {
 
-    @Deprecated
-    private UUID uuid;
+    private UUID number;
 
     /**
      * Добавился ли блок в блокчейн после всех проверок
@@ -45,8 +44,9 @@ public class BlockDto {
      */
     private Long nonce = 0L;
 
+
     public BlockDto() {
-        this.uuid = UUID.randomUUID();
+        this.number = UUID.randomUUID();
     }
 
     /**

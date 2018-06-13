@@ -8,5 +8,5 @@ create table if not exists public.file
   name          varchar(255) not null,
   data          bytea        not null,
   uploaded_time timestamp,
-  block_number  bigint
+  block_number  uuid
 );
