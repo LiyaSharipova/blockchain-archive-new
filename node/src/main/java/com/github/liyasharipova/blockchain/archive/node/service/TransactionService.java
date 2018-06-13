@@ -34,10 +34,14 @@ public class TransactionService {
     //todo убрать захардкоженные значения, но спринг не подставляет @Value
     private static int MAXIMUM_TIMEOUT_OF_LAST_TRANSACTION_SEC = 600;
 
-    /** Храним текущий блок для заполнения транзакциями */
+    /**
+     * Храним текущий блок для заполнения транзакциями
+     */
     private BlockDto currentBlock = new BlockDto();
 
-    /** Храним время последней загрузки транзакции. */
+    /**
+     * Храним время последней загрузки транзакции.
+     */
     private long lastUploadTime = -1L;
 
     /**
@@ -53,14 +57,14 @@ public class TransactionService {
         long currentTime = new Date().getTime();
         // Если текущий блок для добавления заполнен,
         // то добавляем его в очередь для добавления в блокчейн.
-        // Или не в первый раз добавляем транзакцию,
+        // Или неьы в первый раз добавляем транзакцию,
         // которая произошла больше положенного таймаута после последней
+        currentBlock.addTransaction(transaction);
         if (currentTransactions.size() == MAXIMUM_TRANSACTIONS_PER_BLOCK
                 || (lastUploadTime != -1L && (currentTime - lastUploadTime) > maxTimeoutMillisec)) {
             BlocksQueue.getBlocksQueue().add(currentBlock);
             currentBlock = new BlockDto();
         }
 
-        currentBlock.addTransaction(transaction);
     }
 }

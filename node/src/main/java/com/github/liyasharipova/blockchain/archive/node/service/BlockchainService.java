@@ -15,6 +15,7 @@ import org.springframework.web.client.RestTemplate;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 /**
  * Сервис для работы с блокчейном
@@ -47,10 +48,10 @@ public class BlockchainService {
     public void mineBlockAndPlaceToBlockchain(BlockDto block) {
 
         RestTemplate restTemplate = new RestTemplate();
-        String url = "http://" + applicationHost + ":" + applicationPort + "/nonces";
-        NonceRequest request = new NonceRequest(block.getUuid());
-        NonceRangeDto nonceRange = restTemplate.postForObject(url, request, NonceRangeDto.class);
-        mineBlock(block, nonceRange);
+//        String url = "http://" + applicationHost + ":" + applicationPort + "/nonces";
+//        NonceRequest request = new NonceRequest(block.getUuid());
+//        NonceRangeDto nonceRange = restTemplate.postForObject(url, request, NonceRangeDto.class);
+        mineBlock(block);
         blockchain.add(block);
     }
 
@@ -65,15 +66,17 @@ public class BlockchainService {
     /**
      * Увеличиваем значение nonce пока нужный хэш не будет найден
      */
-    public void mineBlock(BlockDto block, NonceRangeDto nonceRange) {
+    public void mineBlock(BlockDto block) {
+        Random random = new Random();
         block.setPreviousHash(getLastBlockHash());
-        block.setNonce(nonceRange.getBeginNonce());
+//        block.setNonce(nonceRange.getBeginNonce());
         block.setMerkleRoot(StringUtil.getMerkleRoot(block.getTransactions()));
+        block.setHash(blockService.calculateHash(block));
         String target = StringUtil.getDificultyString(difficulty); //Create a string with difficulty * "0"
 
-        while (!block.getHash().substring(0, difficulty).equals(target)
-                && !block.getNonce().equals(nonceRange.getEndNonce())) {
-            block.increaseNonce();
+        while (!block.getHash().substring(0, difficulty).equals(target)) {
+//            block.increaseNonce();
+            block.setNonce(random.nextLong());
             block.setHash(blockService.calculateHash(block));
 
         }
