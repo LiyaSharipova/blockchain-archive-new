@@ -6,9 +6,12 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -24,6 +27,7 @@ public class BlockEntity {
 
     @Id
     @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "hash")
@@ -36,7 +40,7 @@ public class BlockEntity {
     private String previousHash;
 
     @OneToMany(mappedBy = "blockEntity")
-    private List<TransactionEntity> transactions;
+    private List<TransactionEntity> transactions = new ArrayList<>();
 
     @Column(name = "number")
     private UUID number;

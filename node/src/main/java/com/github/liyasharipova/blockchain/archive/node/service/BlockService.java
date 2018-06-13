@@ -5,8 +5,8 @@ import com.github.liyasharipova.blockchain.archive.node.dto.SuccessfulMinedByOth
 import com.github.liyasharipova.blockchain.archive.node.entity.BlockEntity;
 import com.github.liyasharipova.blockchain.archive.node.entity.TransactionEntity;
 import com.github.liyasharipova.blockchain.archive.node.repository.BlockRepository;
+import com.github.liyasharipova.blockchain.archive.node.repository.TransactionRepository;
 import com.github.liyasharipova.blockchain.archive.node.util.StringUtil;
-import com.github.liyasharipova.blockchain.node.api.dto.request.TransactionDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
 /**
  * Сервис для работы с блоком
@@ -26,6 +26,9 @@ public class BlockService {
 
     @Autowired
     BlockRepository blockRepository;
+
+    @Autowired
+    TransactionRepository transactionRepository;
 
     /**
      * Вычисляем новый хэш на основе содержимого блока
@@ -49,6 +52,7 @@ public class BlockService {
             transactionEntity.setUploadedTime(transactionDto.getUploadDateTime());
             transactionEntity.setBlockEntity(blockEntity);
             blockEntity.getTransactions().add(transactionEntity);
+            transactionRepository.save(transactionEntity);
         });
         blockRepository.save(blockEntity);
     }
@@ -58,7 +62,8 @@ public class BlockService {
      * {@link SuccessfulMinedByOthersBlocks#getSuccessfulBlocks()}
      */
     public boolean isThisBlockInSuccessfulBlocks(BlockDto thisBlock) {
-        // Список хешей транзакций в виде строк у проверяемого блока
+        // Список хешей транзакций
+        // в виде строк у проверяемого блока
         ArrayList<String> thisBlockTransactions = new ArrayList<>();
         // Из проверяемого блока вытаскиваем транзакции и кладем каждую в thisBlockTransactions
         thisBlock.getTransactions().forEach(transactionDto -> {
@@ -72,7 +77,7 @@ public class BlockService {
 
             // Из каждого замайненного блока вытаскиваем транзакции
             // и кладем каждую в successfulTransactions
-            successfulBlock.getTransactions().forEach(successfulTransaction->{
+            successfulBlock.getTransactions().forEach(successfulTransaction -> {
                 successfulTransactions.add(successfulTransaction.getHash());
             });
 
@@ -90,6 +95,11 @@ public class BlockService {
     }
 
     public String getLastBlockHash() {
-        return blockRepository.findFirstByOrderByIdDesc().getHash();
+        String rootHash = "0";
+        // Если не будет найден блок, то хэш предыдущего = 0
+        // Если будет найден, то отдается через BlockEntity::getHash
+        return Optional.ofNullable(blockRepository.findFirstByOrderByIdDesc())
+                       .map(BlockEntity::getHash)
+                       .orElse(rootHash);
     }
 }
