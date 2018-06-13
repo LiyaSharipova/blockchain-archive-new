@@ -22,6 +22,9 @@ import java.util.List;
 public class BlockEntity {
 
     @Id
+    @Column(name = "id")
+    private Long id;
+
     @Column(name = "hash")
     private String hash;
 

@@ -31,7 +31,7 @@ public class TransactionEntity {
     private Long fileId;
 
     @ManyToOne
-    @JoinColumn(name = "block_hash")
+    @JoinColumn(name = "block_id")
     private BlockEntity blockEntity;
 
     @Column(name = "uploaded_time")
