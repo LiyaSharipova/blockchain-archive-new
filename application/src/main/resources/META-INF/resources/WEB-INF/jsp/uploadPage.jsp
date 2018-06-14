@@ -4,14 +4,14 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Welcome</title>
+    <title>Blockchain Архив</title>
     <link href="webjars/bootstrap/3.3.6/css/bootstrap.min.css"
           rel="stylesheet">
 </head>
 <body>
 <div class="container">
     <br>
-    <H2>Blockchain Archive</H2>
+    <H2>Blockchain Архив</H2>
     <br>
 
     <c:if test="${not empty message}">
@@ -23,12 +23,12 @@
 
         <form method="POST" enctype="multipart/form-data" action="/">
             <div class="form-group">
-                <label for="file">File to upload:</label>
+                <label for="file">Файл для загрузки:</label>
                 <br>
                 <input type="file" class="form-control-file" id="file" required="required" name="file">
             </div>
             <br>
-            <button type="submit" class="btn btn-primary">Upload</button>
+            <button type="submit" class="btn btn-primary">Загрузить</button>
             <br>
             <br>
         </form>
@@ -37,13 +37,13 @@
 
 
     <div>
-        <h3>Uploaded files</h3>
+        <h3>Загруженные файлы</h3>
         <ul class="list-group">
             <c:forEach items="${files}" var="file">
                 <li class="list-group-item">
                     <c:choose>
                         <c:when test="${empty file.blockNumber}">
-                            <c:out value="${file.name} is waiting for being saved in Blockchain"/>
+                            <c:out value="${file.name} ожидает сохранения в сети Blockchain"/>
                         </c:when>
                         <c:otherwise>
                             <a href="/files/${file.id}">${file.name}</a>

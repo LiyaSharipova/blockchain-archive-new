@@ -31,5 +31,14 @@ public class NonceCheckRequest {
     @Valid
     private List<TransactionDto> transactions;
 
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("NonceCheckRequest{");
+        sb.append("nonce=").append(nonce);
+        sb.append(", blockHash='").append(blockHash).append('\'');
+        sb.append(", blockNumber=").append(blockNumber);
+        sb.append('}');
+        return sb.toString();
+    }
 }
 

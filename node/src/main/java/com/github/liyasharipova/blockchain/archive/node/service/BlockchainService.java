@@ -1,11 +1,11 @@
 package com.github.liyasharipova.blockchain.archive.node.service;
 
 import com.github.liyasharipova.blockchain.application.api.dto.request.BlockRequest;
-import com.github.liyasharipova.blockchain.node.api.dto.request.TransactionDto;
-import com.github.liyasharipova.blockchain.node.api.dto.response.BlockDto;
 import com.github.liyasharipova.blockchain.archive.node.repository.TransactionRepository;
 import com.github.liyasharipova.blockchain.archive.node.util.StringUtil;
 import com.github.liyasharipova.blockchain.node.api.dto.request.NonceCheckRequest;
+import com.github.liyasharipova.blockchain.node.api.dto.request.TransactionDto;
+import com.github.liyasharipova.blockchain.node.api.dto.response.BlockDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -57,7 +57,6 @@ public class BlockchainService {
         blockService.saveBlockIfNotExist(block);
     }
 
-
     /**
      * Увеличиваем значение nonce пока нужный хэш не будет найден
      */
@@ -88,7 +87,8 @@ public class BlockchainService {
         String uri = "http://" + applicationHost + ":" + applicationPort + "/receive-mining-result";
         BlockRequest blockRequest = new BlockRequest();
         blockRequest.setBlockNumber(block.getNumber());
-        blockRequest.setFileIds(block.getTransactions().stream().map(TransactionDto::getId).collect(Collectors.toList()));
+        blockRequest
+                .setFileIds(block.getTransactions().stream().map(TransactionDto::getId).collect(Collectors.toList()));
         restTemplate.postForObject(uri, blockRequest, Void.class);
     }
 
@@ -96,13 +96,17 @@ public class BlockchainService {
         RestTemplate restTemplate = new RestTemplate();
         for (int i = 0; i < nodeHosts.size(); i++) {
             String nodeHostAndPort = nodeHosts.get(i) + nodePorts.get(i);
-            if (!nodeHostAndPort.equals(ownHost+ownPort)) {
+            if (!nodeHostAndPort.equals(ownHost + ownPort)) {
                 String uri = "http://" + nodeHosts.get(i) + ":" + nodePorts.get(i) + "/receive-mined-block-info";
                 NonceCheckRequest nonceCheckRequest = new NonceCheckRequest();
                 nonceCheckRequest.setBlockHash(block.getHash());
                 nonceCheckRequest.setNonce(block.getNonce());
                 nonceCheckRequest.setTransactions(block.getTransactions());
-                restTemplate.postForObject(uri, nonceCheckRequest, Boolean  .class);
+                try {
+                    restTemplate.postForObject(uri, nonceCheckRequest, Boolean.class);
+                } catch (Exception e) {
+                    log.error("Ошибка при отправке POST {},  {}, {}", uri, nonceCheckRequest.toString(), e.getMessage(), e.getCause());
+                }
                 log.info("Отправлен mined block info {}:{}", nodeHosts.get(i), nodePorts.get(i));
             }
         }

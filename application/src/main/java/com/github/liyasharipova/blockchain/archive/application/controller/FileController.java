@@ -115,7 +115,7 @@ public class FileController implements FileApi {
             throw e;
         }
 
-        log.info("Файл и хэш были отправлены в хранилище и нодам: {}");
+        log.info("Файл и хэш были отправлены в хранилище и нодам");
 
         redirectAttributes.addFlashAttribute("message",
                 "Вы успешно загрузили файл с именем " + file.getOriginalFilename());

@@ -7,12 +7,13 @@ import com.github.liyasharipova.blockchain.filestorage.api.dto.FileDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
-import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -30,6 +31,8 @@ public class FileService {
             fileDto.setId(fileEntity.getId());
             fileDto.setName(fileEntity.getName());
             fileDto.setHash(fileEntity.getHash());
+            Optional.ofNullable(fileEntity.getBlockNumber())
+                    .ifPresent(fileDto::setBlockNumber);
             files.add(fileDto);
         });
 
@@ -39,14 +42,17 @@ public class FileService {
 
     public Long saveFile(FileDto fileDto) {
         FileEntity entity = null;
-        FileEntity fileEntity = new FileEntity(fileDto.getName(), fileDto.getHash(), fileDto.getData(), fileDto.getBlockNumber());
+        FileEntity fileEntity =
+                new FileEntity(fileDto.getName(), fileDto.getHash(), fileDto.getData(), fileDto.getBlockNumber());
         entity = fileStorageRepository.save(fileEntity);
         return entity.getId();
     }
 
-    public Resource getFileById(Long id) {
-        byte[] data = fileStorageRepository.getFileEntityById(id).getData();
-        return new ByteArrayResource(data);
+    public AbstractMap.SimpleEntry<String, ByteArrayResource> getFileById(Long id) {
+        FileEntity entity = fileStorageRepository.getFileEntityById(id);
+        byte[] data = entity.getData();
+        return new AbstractMap.SimpleEntry<>(entity.getName(), new ByteArrayResource(data));
+
     }
 
     public void setBlocks(BlockRequest blockRequest) {

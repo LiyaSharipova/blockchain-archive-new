@@ -146,6 +146,7 @@ public class BlockService {
                     trEntity.getFileHash(), trEntity.getUploadedTime());
             blockDto.getTransactions().add(transactionDto);
         });
+        blockDto.setMerkleRoot(StringUtil.getMerkleRoot(blockDto.getTransactions()));
         return blockDto;
     }
 
