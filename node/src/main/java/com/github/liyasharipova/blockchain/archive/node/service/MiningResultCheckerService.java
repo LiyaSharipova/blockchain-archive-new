@@ -58,14 +58,15 @@ public class MiningResultCheckerService {
         String calculatedHash = blockService.calculateHash(checkBlock);
         // Если не совпали, то просим остальные ноды и себя запустить selfcheck()
         if (!nonceCheckRequest.getBlockHash().equals(calculatedHash)) {
-            SelfCheckResultDto checkResultDto = nodeService.selfCheck();
-            RestTemplate restTemplate = new RestTemplate();
-            // Отправка хеша каждой ноде
-            if (checkResultDto.getIsCheckSuccessful()) {
-                askOthersForCheck();
-            } else {
-                askToCopyRightBlocks(checkResultDto);
-            }
+            //todo закомментровано, так как не успевала
+//            SelfCheckResultDto checkResultDto = nodeService.selfCheck();
+//            RestTemplate restTemplate = new RestTemplate();
+//            // Отправка хеша каждой ноде
+//            if (checkResultDto.getIsCheckSuccessful()) {
+//                askOthersForCheck();
+//            } else {
+//                askToCopyRightBlocks(checkResultDto);
+//            }
         } else {
             //А если все нормально, остановить майнинг и добавить в блокчейн замайненный блок
             SuccessfulMinedByOthersBlocks.getSuccessfulBlocks().add(checkBlock);
